@@ -1,0 +1,23 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  enforce-approval:
+    uses: gerald-jem/devops.actions/.github/workflows/pr-approval.yml@main
+
+  sonarqube:
+    needs: enforce-approval
+    uses: gerald-jem/devops.actions/.github/workflows/sonarqube.yml@main
+    secrets: inherit
+    
+  deploy:
+    needs: sonarqube
+    uses: gerald-jem/devops.actions/.github/workflows/deploy-changes.yml@main
+    secrets: inherit
