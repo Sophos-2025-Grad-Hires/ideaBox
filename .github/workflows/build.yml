@@ -10,14 +10,14 @@ on:
 
 jobs:
   enforce-approval:
-    uses: gerald-jem/devops.actions/.github/workflows/pr-approval.yml@main
+    uses: Sophos-2025-Grad-Hires/devops.actions/.github/workflows/pr-approval.yml@main
 
   sonarqube:
     needs: enforce-approval
-    uses: gerald-jem/devops.actions/.github/workflows/sonarqube.yml@main
+    uses: Sophos-2025-Grad-Hires/devops.actions/.github/workflows/sonarqube.yml@main
     secrets: inherit
     
   deploy:
     needs: sonarqube
-    uses: gerald-jem/devops.actions/.github/workflows/deploy-changes.yml@main
+    uses: Sophos-2025-Grad-Hires/devops.actions/.github/workflows/deploy-changes.yml@main
     secrets: inherit
