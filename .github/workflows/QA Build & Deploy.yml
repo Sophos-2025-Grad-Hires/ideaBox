@@ -1,0 +1,56 @@
+name: SF Package and Deploy to QA
+
+on:
+  pull_request:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  QAbuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: patrykacc/sf-cli-setup@v1.1.0
+
+      - name: Create deploy package
+        run: sfdx force:source:convert -d deploy
+
+      - name: Upload deploy package
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-package
+          path: deploy/
+          
+  QAdeploy:
+    runs-on: ubuntu-latest
+    needs: QAbuild
+    strategy:
+      matrix:
+        env: [ITAS029]
+    environment: ${{ matrix.env }}
+    steps:
+      - uses: actions/checkout@v4   # repo still needed for configs/scripts
+      - uses: patrykacc/sf-cli-setup@v1.1.0
+
+      - name: Download deploy package
+        uses: actions/download-artifact@v4
+        with:
+          name: deploy-package
+
+      - name: Authenticate with Salesforce
+        run: |
+          sf org login jwt \
+            --client-id ${{ secrets.SF_CONSUMER_KEY }} \
+            --jwt-key-file <(echo "${{ secrets.SF_JWT_KEY }}") \
+            --username ${{ secrets.SF_USERNAME }} \
+            --instance-url https://test.salesforce.com
+
+      - name: Deploy to ${{ matrix.env }}
+        run: |
+          sfdx force:mdapi:deploy \
+            -d deploy \
+            -l NoTestRun
+            -w 30 \
+#            -l RunSpecifiedTests \
+#            -r MyTestClass1,MyTestClass2
