@@ -22,7 +22,8 @@ jobs:
           repository: Sophos-2025-Grad-Hires/devops.actions
           path: devops-actions
           ref: main  # or whichever branch has the latest
-
+          token: ${{ secrets.GH_PAT }}
+          
       # Setup .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
