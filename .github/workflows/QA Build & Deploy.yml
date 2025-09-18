@@ -1,9 +1,8 @@
 name: SF Package and Deploy to QA
 
 on:
-  push:
-    branches: [ develop ]
   pull_request:
+    branches: [ develop ]
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
