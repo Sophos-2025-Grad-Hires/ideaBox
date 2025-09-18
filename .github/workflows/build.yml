@@ -20,10 +20,10 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Build SfCliInstaller
-        run: dotnet build tools/SfCliInstaller/SfCliInstaller/SfCliInstaller.csproj --configuration Release
+        run: dotnet build Sophos-2025-Grad-Hires/devops.actions/blob/main/tools/SfCliInstaller/SfCliInstaller/SfCliInstaller.csproj --configuration Release
 
       - name: Run SfCliInstaller (install latest CLI)
-        run: dotnet run --project tools/SfCliInstaller/SfCliInstaller/SfCliInstaller.csproj -- latest
+        run: dotnet run --project Sophos-2025-Grad-Hires/devops.actions/blob/main/tools/SfCliInstaller/SfCliInstaller/SfCliInstaller.csproj -- latest
 
       - name: Add sf CLI to PATH
         run: echo "${HOME}/sf/bin" >> $GITHUB_PATH
