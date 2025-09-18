@@ -15,36 +15,8 @@ jobs:
       - name: Checkout primary repo
         uses: actions/checkout@v4
 
-      # Checkout the repo containing SfCliInstaller
-      - name: Checkout SfCliInstaller repo
-        uses: actions/checkout@v4
-        with:
-          repository: Sophos-2025-Grad-Hires/devops.actions
-          path: devops-actions
-          ref: main  # or whichever branch has the latest
-          token: ${{ secrets.GH_PAT }}
-          
-      # Setup .NET
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
-
-      # Build SfCliInstaller from the other repo
-      - name: Build SfCliInstaller
-        run: dotnet build devops-actions/tools/SfCliInstaller/SfCliInstaller/SfCliInstaller.csproj --configuration Release
-
-      # Run SfCliInstaller (install latest CLI)
-      - name: Run SfCliInstaller (install latest CLI)
-        run: dotnet run --project devops-actions/tools/SfCliInstaller/SfCliInstaller/SfCliInstaller.csproj -- latest
-
-      # Add the sf CLI to PATH
-      - name: Add sf CLI to PATH
-        run: echo "${HOME}/sf/bin" >> $GITHUB_PATH
-
-      # Verify Salesforce CLI installation
-      - name: Verify Salesforce CLI installation
-        run: sf --version
+      - name: Install Salesforce CLI
+        uses: patrykacc/sf-cli-setup@v1.1.0
         
   connect-to-ITAS019:
     runs-on: ubuntu-latest
