@@ -14,9 +14,6 @@ jobs:
       # Checkout your main repo (the one with the workflow)
       - name: Checkout primary repo
         uses: actions/checkout@v4
-
-      - name: Install Salesforce CLI
-        uses: patrykacc/sf-cli-setup@v1.1.0
         
   connect-to-ITAS019:
     runs-on: ubuntu-latest
@@ -24,6 +21,9 @@ jobs:
     environment: ITAS019
     
     steps:
+      - name: Install Salesforce CLI
+        uses: patrykacc/sf-cli-setup@v1.1.0
+        
       - name: Write JWT private key
         run: echo "${{ secrets.SF_JWT_KEY }}" > server.key
 
@@ -44,6 +44,9 @@ jobs:
     environment: ITAS029
     
     steps:
+      - name: Install Salesforce CLI
+        uses: patrykacc/sf-cli-setup@v1.1.0
+        
       - name: Write JWT private key
         run: echo "${{ secrets.SF_JWT_KEY }}" > server.key
 
