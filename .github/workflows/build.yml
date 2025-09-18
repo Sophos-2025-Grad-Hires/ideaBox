@@ -24,19 +24,19 @@ jobs:
     environment: ITAS019
     
     steps:
-        - name: Write JWT private key
-          run: echo "${{ secrets.SF_JWT_KEY }}" > server.key
-  
-        - name: Authenticate with Salesforce
-          run: |
-            sf org login jwt \
-              --client-id ${{ secrets.SF_CONSUMER_KEY }} \
-              --jwt-key-file server.key \
-              --username ${{ secrets.SF_USERNAME }} \
-              --instance-url https://test.salesforce.com \
-  
-        - name: Test org connection
-          run: sf org display
+      - name: Write JWT private key
+        run: echo "${{ secrets.SF_JWT_KEY }}" > server.key
+
+      - name: Authenticate with Salesforce
+        run: |
+          sfdx force:auth:jwt:grant \
+            --clientid ${{ secrets.SF_CONSUMER_KEY }} \
+            --jwtkeyfile server.key \
+            --username ${{ secrets.SF_USERNAME }} \
+            --instanceurl https://test.salesforce.com
+
+      - name: Verify connection
+        run: sfdx force:org:list
           
   connect-to-ITAS029:
     runs-on: ubuntu-latest
@@ -44,16 +44,16 @@ jobs:
     environment: ITAS029
     
     steps:
-        - name: Write JWT private key
-          run: echo "${{ secrets.SF_JWT_KEY }}" > server.key
-  
-        - name: Authenticate with Salesforce
-          run: |
-            sf org login jwt \
-              --client-id ${{ secrets.SF_CONSUMER_KEY }} \
-              --jwt-key-file server.key \
-              --username ${{ secrets.SF_USERNAME }} \
-              --instance-url https://test.salesforce.com \
-  
-        - name: Test org connection
-          run: sf org display
+      - name: Write JWT private key
+        run: echo "${{ secrets.SF_JWT_KEY }}" > server.key
+
+      - name: Authenticate with Salesforce
+        run: |
+          sfdx force:auth:jwt:grant \
+            --clientid ${{ secrets.SF_CONSUMER_KEY }} \
+            --jwtkeyfile server.key \
+            --username ${{ secrets.SF_USERNAME }} \
+            --instanceurl https://test.salesforce.com
+
+      - name: Verify connection
+        run: sfdx force:org:list
