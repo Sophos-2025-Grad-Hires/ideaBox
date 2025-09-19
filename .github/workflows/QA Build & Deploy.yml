@@ -58,9 +58,9 @@ jobs:
       - name: Parse deploy results
         id: results
         run: |
-          passed=$(jq '.result.details.runTestResult.numTestsRun' deploy-results.json)
+          total=$(jq '.result.details.runTestResult.numTestsRun' deploy-results.json)
           failed=$(jq '.result.details.runTestResult.numFailures' deploy-results.json)
-          total=$((passed + failed))
+          passed=$((total - failed))
           time=$(jq '.result.details.runTestResult.totalTime' deploy-results.json)
 
           # Extract failed test names
@@ -68,7 +68,7 @@ jobs:
 
           {
             echo "summary<<EOF"
-            echo "✅ Passed: $((passed - failed))"
+            echo "✅ Passed: $passed"
             echo "❌ Failed: $failed"
             echo "📊 Total: $total"
             echo "⏱️ Time: ${time}s"
