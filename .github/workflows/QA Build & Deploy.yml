@@ -50,4 +50,4 @@ jobs:
             --source-dir force-app \
             --wait 30 \
             --test-level RunSpecifiedTests \
-            --runtests AccountSelectorTest
+            --tests AccountSelectorTest
