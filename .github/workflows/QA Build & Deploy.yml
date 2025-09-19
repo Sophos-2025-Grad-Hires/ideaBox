@@ -47,7 +47,6 @@ jobs:
         run: |
           sfdx force:mdapi:deploy \
             -d deploy \
-            -l NoTestRun
             -w 30 \
-#            -l RunSpecifiedTests \
-#            -r MyTestClass1,MyTestClass2
+            -l RunSpecifiedTests \ 
+            -r AccountSelectorTest
