@@ -44,16 +44,48 @@ jobs:
             --instance-url https://test.salesforce.com \
             --set-default
 
-      - name: Deploy to QA
+      - name: Detect changed Apex classes
+        id: detect
+        run: |
+          # Look for changed Apex class files in this PR
+          files=$(git diff --name-only origin/develop...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
+
+          if [ -z "$files" ]; then
+            echo "No Apex classes changed. Skipping tests."
+            echo "run_tests=false" >> $GITHUB_OUTPUT
+          else
+            tests=""
+            for f in $files; do
+              class=$(basename "$f" .cls)
+              # Convention: className → classNameTest
+              tests="$tests ${class}Test"
+            done
+            echo "run_tests=true" >> $GITHUB_OUTPUT
+            echo "test_classes=$tests" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy to QA (with tests)
         id: deploy
+        if: steps.detect.outputs.run_tests == 'true'
+        continue-on-error: true   # step won’t block next step
         run: |
           sf project deploy start \
             --source-dir force-app \
             --wait 30 \
             --test-level RunSpecifiedTests \
-            --tests AccountSelectorTest \
-            --json > deploy-results.json
-        continue-on-error: true   # step won’t block next step
+            --tests "${{ steps.detect.outputs.test_classes }}" \
+            --json | tee deploy-results.json
+
+      - name: Deploy to QA (no tests)
+        id: deploy_no_tests
+        if: steps.detect.outputs.run_tests != 'true'
+        continue-on-error: true
+        run: |
+          sf project deploy start \
+            --source-dir force-app \
+            --wait 30 \
+            --test-level NoTestRun \
+            --json | tee deploy-results.json
 
       - name: Parse deploy results
         id: results
@@ -92,5 +124,5 @@ jobs:
           token: ${{ secrets.GH_PAT }}
 
       - name: Fail job if deploy step failed
-        if: steps.deploy.outcome == 'failure'
+        if: steps.deploy.outcome == 'failure' || steps.deploy_no_tests.outcome == 'failure'
         run: exit 1
