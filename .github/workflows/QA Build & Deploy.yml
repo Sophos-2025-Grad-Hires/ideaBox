@@ -46,7 +46,7 @@ jobs:
       - name: Deploy to QA
         run: |
           sf project deploy start \
-            --metadata-dir deploy \
+            --source-dir force-app \
             --wait 30 \
             --test-level RunSpecifiedTests \
             --runtests AccountSelectorTest
