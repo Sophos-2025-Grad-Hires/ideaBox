@@ -45,8 +45,8 @@ jobs:
 
       - name: Deploy to QA
         run: |
-          sfdx force:mdapi:deploy \
-            -d deploy \
-            -w 30 \
-            -l RunSpecifiedTests \ 
-            -r AccountSelectorTest
+          sf project deploy start \
+            --metadata-dir deploy \
+            --wait 30 \
+            --test-level RunSpecifiedTests \
+            --runtests AccountSelectorTest
