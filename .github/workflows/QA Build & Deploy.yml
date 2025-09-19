@@ -41,7 +41,7 @@ jobs:
             --client-id ${{ secrets.SF_CONSUMER_KEY }} \
             --jwt-key-file <(echo "${{ secrets.SF_JWT_KEY }}") \
             --username ${{ secrets.SF_USERNAME }} \
-            --instance-url https://test.salesforce.com
+            --instance-url https://test.salesforce.com \
             --set-default
 
       - name: Deploy to QA
