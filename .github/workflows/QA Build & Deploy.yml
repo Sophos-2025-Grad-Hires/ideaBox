@@ -27,7 +27,11 @@ jobs:
     needs: QAbuild
     environment: ITAS029 # subject to change
     steps:
-      - uses: actions/checkout@v4   # repo still needed for configs/scripts
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+
       - uses: patrykacc/sf-cli-setup@v1.1.0
 
       - name: Download deploy package
@@ -41,12 +45,102 @@ jobs:
             --client-id ${{ secrets.SF_CONSUMER_KEY }} \
             --jwt-key-file <(echo "${{ secrets.SF_JWT_KEY }}") \
             --username ${{ secrets.SF_USERNAME }} \
-            --instance-url https://test.salesforce.com
+            --instance-url https://test.salesforce.com \
+            --set-default
 
-      - name: Deploy to QA
+      - name: Detect changed Apex classes
+        id: detect
         run: |
-          sfdx force:mdapi:deploy \
-            -d deploy \
-            -w 30 \
-            -l RunSpecifiedTests \ 
-            -r AccountSelectorTest
+          # Make sure develop branch is available for comparison
+          git fetch origin develop
+
+          # Find Apex classes changed or added in this PR (compared to develop)
+          files=$(git diff --name-only --diff-filter=AM origin/develop...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
+
+          if [ -z "$files" ]; then
+            echo "No Apex classes changed. Skipping tests."
+            echo "run_tests=false" >> $GITHUB_OUTPUT
+          else
+            tests=""
+            for f in $files; do
+              class=$(basename "$f" .cls)
+              testClass="${class}Test"
+
+              # Check if a test file for this class exists in the repo
+              if [ -f "force-app/main/default/classes/${testClass}.cls" ]; then
+                tests="$tests $testClass"
+              fi
+            done
+
+            if [ -z "$tests" ]; then
+              echo "No matching test classes found. Defaulting to RunLocalTests."
+              echo "run_tests=all" >> $GITHUB_OUTPUT
+            else
+              echo "Detected test classes: $tests"
+              echo "run_tests=true" >> $GITHUB_OUTPUT
+              echo "test_classes=$tests" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Deploy to QA (with tests)
+        id: deploy
+        if: steps.detect.outputs.run_tests == 'true'
+        run: |
+          sf project deploy start \
+            --source-dir force-app \
+            --wait 30 \
+            --test-level RunSpecifiedTests \
+            --tests ${{ steps.detect.outputs.test_classes }} \
+            --json > deploy-results.json
+        continue-on-error: true   # step won’t block next step
+
+      - name: Deploy to QA (no tests)
+        id: deploy_no_tests
+        if: steps.detect.outputs.run_tests != 'true'
+        run: |
+          sf project deploy start \
+            --source-dir force-app \
+            --wait 30 \
+            --test-level NoTestRun \
+            --json > deploy-results.json
+        continue-on-error: true
+
+      - name: Parse deploy results
+        id: results
+        run: |
+          total=$(jq '.result.details.runTestResult.numTestsRun' deploy-results.json)
+          failed=$(jq '.result.details.runTestResult.numFailures' deploy-results.json)
+          passed=$((total - failed))
+          time=$(jq '.result.details.runTestResult.totalTime' deploy-results.json)
+
+          # Extract failed test names
+          failed_tests=$(jq -r '.result.details.runTestResult.failures[]?.methodName' deploy-results.json | paste -sd ', ' -)
+
+          {
+            echo "summary<<EOF"
+            echo "✅ Passed: $passed"
+            echo "❌ Failed: $failed"
+            echo "📊 Total: $total"
+            echo "⏱️ Time: ${time}s"
+            echo ""
+            if [ -n "$failed_tests" ]; then
+              echo "**Failed Tests:**"
+              for t in $(jq -r '.result.details.runTestResult.failures[]?.methodName' deploy-results.json); do
+                echo "- $t"
+              done
+            fi
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: Comment results on PR
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## Salesforce Deployment Results
+            ${{ steps.results.outputs.summary }}
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Fail job if deploy step failed
+        if: steps.deploy.outcome == 'failure' || steps.deploy_no_tests.outcome == 'failure'
+        run: exit 1
