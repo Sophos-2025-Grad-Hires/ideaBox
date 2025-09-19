@@ -91,9 +91,9 @@ jobs:
             --wait 30 \
             --test-level RunSpecifiedTests \
             --tests "${{ steps.detect.outputs.test_classes }}" \
-            --json | tee deploy-results.json
+            --json > deploy-results.json
         continue-on-error: true   # step won’t block next step
-        
+
       - name: Deploy to QA (no tests)
         id: deploy_no_tests
         if: steps.detect.outputs.run_tests != 'true'
@@ -102,7 +102,7 @@ jobs:
             --source-dir force-app \
             --wait 30 \
             --test-level NoTestRun \
-            --json | tee deploy-results.json
+            --json > deploy-results.json
         continue-on-error: true
 
       - name: Parse deploy results
