@@ -60,9 +60,8 @@ jobs:
         with:
           name: deploy-results
           path: deploy-results.json
-          
+
       - name: Comment results on PR
-        if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -71,6 +70,7 @@ jobs:
             ```
             $(cat deploy-results.json | jq -r '.')
             ```
+          token: ${{ secrets.GH_PAT }}
 
       - name: Fail job if deploy step failed
         if: steps.deploy.outcome == 'failure'
