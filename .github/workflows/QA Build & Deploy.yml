@@ -55,11 +55,32 @@ jobs:
             --json > deploy-results.json
         continue-on-error: true   # step won’t block next step
 
-      - name: Upload results artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: deploy-results
-          path: deploy-results.json
+      - name: Parse deploy results
+        id: results
+        run: |
+          passed=$(jq '.result.details.runTestResult.numTestsRun' deploy-results.json)
+          failed=$(jq '.result.details.runTestResult.numFailures' deploy-results.json)
+          total=$((passed + failed))
+          time=$(jq '.result.details.runTestResult.totalTime' deploy-results.json)
+
+          # Extract failed test names
+          failed_tests=$(jq -r '.result.details.runTestResult.failures[]?.methodName' deploy-results.json | paste -sd ', ' -)
+
+          {
+            echo "summary<<EOF"
+            echo "✅ Passed: $((passed - failed))"
+            echo "❌ Failed: $failed"
+            echo "📊 Total: $total"
+            echo "⏱️ Time: ${time}s"
+            echo ""
+            if [ -n "$failed_tests" ]; then
+              echo "**Failed Tests:**"
+              for t in $(jq -r '.result.details.runTestResult.failures[]?.methodName' deploy-results.json); do
+                echo "- $t"
+              done
+            fi
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
 
       - name: Comment results on PR
         uses: peter-evans/create-or-update-comment@v4
@@ -67,9 +88,7 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             ## Salesforce Deployment Results
-            ```
-            $(cat deploy-results.json | jq -r '.')
-            ```
+            ${{ steps.results.outputs.summary }}
           token: ${{ secrets.GH_PAT }}
 
       - name: Fail job if deploy step failed
