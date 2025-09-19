@@ -47,8 +47,11 @@ jobs:
       - name: Detect changed Apex classes
         id: detect
         run: |
-          # Look for changed Apex class files in this PR
-          files=$(git diff --name-only origin/develop...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
+          # Make sure develop branch is available for comparison
+          git fetch origin develop
+
+          # Find Apex classes changed or added in this PR (compared to develop)
+          files=$(git diff --name-only --diff-filter=AM origin/develop...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
 
           if [ -z "$files" ]; then
             echo "No Apex classes changed. Skipping tests."
@@ -57,11 +60,22 @@ jobs:
             tests=""
             for f in $files; do
               class=$(basename "$f" .cls)
-              # Convention: className → classNameTest
-              tests="$tests ${class}Test"
+              testClass="${class}Test"
+
+              # Check if a test file for this class exists in the repo
+              if [ -f "force-app/main/default/classes/${testClass}.cls" ]; then
+                tests="$tests $testClass"
+              fi
             done
-            echo "run_tests=true" >> $GITHUB_OUTPUT
-            echo "test_classes=$tests" >> $GITHUB_OUTPUT
+
+            if [ -z "$tests" ]; then
+              echo "No matching test classes found. Defaulting to RunLocalTests."
+              echo "run_tests=all" >> $GITHUB_OUTPUT
+            else
+              echo "Detected test classes: $tests"
+              echo "run_tests=true" >> $GITHUB_OUTPUT
+              echo "test_classes=$tests" >> $GITHUB_OUTPUT
+            fi
           fi
 
       - name: Deploy to QA (with tests)
