@@ -27,7 +27,11 @@ jobs:
     needs: QAbuild
     environment: ITAS029 # subject to change
     steps:
-      - uses: actions/checkout@v4   # repo still needed for configs/scripts
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+          
       - uses: patrykacc/sf-cli-setup@v1.1.0
 
       - name: Download deploy package
