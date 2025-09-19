@@ -55,26 +55,8 @@ jobs:
             --json > deploy-results.json
         continue-on-error: true   # step won’t block next step
 
-      - name: Upload results artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: deploy-results
-          path: deploy-results.json
-
-      - name: Fail job if deploy step failed
-        if: steps.deploy.outcome == 'failure'
-        run: exit 1
-
-  comment-results:
-    runs-on: ubuntu-latest
-    needs: QAdeploy
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: deploy-results
-
       - name: Comment results on PR
+        if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -83,3 +65,7 @@ jobs:
             ```
             $(cat deploy-results.json | jq -r '.')
             ```
+
+      - name: Fail job if deploy step failed
+        if: steps.deploy.outcome == 'failure'
+        run: exit 1
