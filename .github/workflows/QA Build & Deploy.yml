@@ -25,10 +25,7 @@ jobs:
   QAdeploy:
     runs-on: ubuntu-latest
     needs: QAbuild
-    strategy:
-      matrix:
-        env: [ITAS029]
-    environment: ${{ matrix.env }}
+    environment: ITAS029 # subject to change
     steps:
       - uses: actions/checkout@v4   # repo still needed for configs/scripts
       - uses: patrykacc/sf-cli-setup@v1.1.0
@@ -46,7 +43,7 @@ jobs:
             --username ${{ secrets.SF_USERNAME }} \
             --instance-url https://test.salesforce.com
 
-      - name: Deploy to ${{ matrix.env }}
+      - name: Deploy to QA
         run: |
           sfdx force:mdapi:deploy \
             -d deploy \
