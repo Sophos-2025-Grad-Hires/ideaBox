@@ -51,3 +51,16 @@ jobs:
             --wait 30 \
             --test-level RunSpecifiedTests \
             --tests AccountSelectorTest
+            --json > deploy-results.json
+          cat deploy-results.json
+
+      - name: Comment results on PR
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## Salesforce Deployment Results
+            ```
+            $(cat deploy-results.json | jq -r '.')
+            ```
