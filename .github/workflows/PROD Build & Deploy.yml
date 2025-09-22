@@ -54,36 +54,35 @@ jobs:
       - name: Detect changed Apex classes
         id: detect
         run: |
-          # Make sure develop branch is available for comparison
-          git fetch origin develop
+            # Make sure main and develop are available for comparison
+            git fetch origin main develop
 
-          # Find Apex classes changed or added in this PR (compared to develop)
-          files=$(git diff --name-only --diff-filter=AM origin/main...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
+            # Find Apex classes changed or added in develop (compared to main)
+            files=$(git diff --name-only --diff-filter=AM origin/main...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
 
-          if [ -z "$files" ]; then
+            if [ -z "$files" ]; then
             echo "No Apex classes changed. Skipping tests."
             echo "run_tests=false" >> $GITHUB_OUTPUT
-          else
+            else
             tests=""
             for f in $files; do
-              class=$(basename "$f" .cls)
-              testClass="${class}Test"
+                class=$(basename "$f" .cls)
+                testClass="${class}Test"
 
-              # Check if a test file for this class exists in the repo
-              if [ -f "force-app/main/default/classes/${testClass}.cls" ]; then
+                if [ -f "force-app/main/default/classes/${testClass}.cls" ]; then
                 tests="$tests $testClass"
-              fi
+                fi
             done
 
             if [ -z "$tests" ]; then
-              echo "No matching test classes found. Defaulting to RunLocalTests."
-              echo "run_tests=all" >> $GITHUB_OUTPUT
+                echo "No matching test classes found. Defaulting to RunLocalTests."
+                echo "run_tests=all" >> $GITHUB_OUTPUT
             else
-              echo "Detected test classes: $tests"
-              echo "run_tests=true" >> $GITHUB_OUTPUT
-              echo "test_classes=$tests" >> $GITHUB_OUTPUT
+                echo "Detected test classes: $tests"
+                echo "run_tests=true" >> $GITHUB_OUTPUT
+                echo "test_classes=$tests" >> $GITHUB_OUTPUT
             fi
-          fi
+            fi
 
       - name: Deploy to ${{ matrix.env }} (with tests)
         id: deploy
