@@ -1,13 +1,13 @@
-name: SF Package and Deploy to QA
+name: SF Package and Deploy to QA & PROD
 
 on:
   pull_request:
-    branches: [ develop ]
+    branches: [ main ]
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:
-  QAbuild:
+  PRODbuild:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,10 +22,13 @@ jobs:
           name: deploy-package
           path: deploy/
           
-  QAdeploy:
+  PRODdeploy:
     runs-on: ubuntu-latest
-    needs: QAbuild
-    environment: ITAS029 # subject to change
+    needs: PRODbuild
+    strategy:
+      matrix:
+        env: [ITAS019, ITAS029]
+    environment: ${{ matrix.env }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,38 +54,37 @@ jobs:
       - name: Detect changed Apex classes
         id: detect
         run: |
-          # Make sure develop branch is available for comparison
-          git fetch origin develop
+            # Make sure main is available for comparison
+            git fetch origin main 
 
-          # Find Apex classes changed or added in this PR (compared to develop)
-          files=$(git diff --name-only --diff-filter=AM origin/develop...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
+            # Find Apex classes changed or added in this PR (compared to main)
+            files=$(git diff --name-only --diff-filter=AM origin/main...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
 
-          if [ -z "$files" ]; then
+            if [ -z "$files" ]; then
             echo "No Apex classes changed. Skipping tests."
             echo "run_tests=false" >> $GITHUB_OUTPUT
-          else
+            else
             tests=""
             for f in $files; do
-              class=$(basename "$f" .cls)
-              testClass="${class}Test"
+                class=$(basename "$f" .cls)
+                testClass="${class}Test"
 
-              # Check if a test file for this class exists in the repo
-              if [ -f "force-app/main/default/classes/${testClass}.cls" ]; then
+                if [ -f "force-app/main/default/classes/${testClass}.cls" ]; then
                 tests="$tests $testClass"
-              fi
+                fi
             done
 
             if [ -z "$tests" ]; then
-              echo "No matching test classes found. Defaulting to RunLocalTests."
-              echo "run_tests=all" >> $GITHUB_OUTPUT
+                echo "No matching test classes found. Defaulting to RunLocalTests."
+                echo "run_tests=all" >> $GITHUB_OUTPUT
             else
-              echo "Detected test classes: $tests"
-              echo "run_tests=true" >> $GITHUB_OUTPUT
-              echo "test_classes=$tests" >> $GITHUB_OUTPUT
+                echo "Detected test classes: $tests"
+                echo "run_tests=true" >> $GITHUB_OUTPUT
+                echo "test_classes=$tests" >> $GITHUB_OUTPUT
             fi
-          fi
+            fi
 
-      - name: Deploy to QA (with tests)
+      - name: Deploy to ${{ matrix.env }} (with tests)
         id: deploy
         if: steps.detect.outputs.run_tests == 'true'
         run: |
@@ -94,7 +96,7 @@ jobs:
             --json > deploy-results.json
         continue-on-error: true   # step won’t block next step
 
-      - name: Deploy to QA (no tests)
+      - name: Deploy to ${{ matrix.env }} (no tests)
         id: deploy_no_tests
         if: steps.detect.outputs.run_tests != 'true'
         run: |
