@@ -54,10 +54,10 @@ jobs:
       - name: Detect changed Apex classes
         id: detect
         run: |
-            # Make sure main and develop are available for comparison
-            git fetch origin main develop
+            # Make sure main is available for comparison
+            git fetch origin main 
 
-            # Find Apex classes changed or added in develop (compared to main)
+            # Find Apex classes changed or added in this PR (compared to main)
             files=$(git diff --name-only --diff-filter=AM origin/main...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
 
             if [ -z "$files" ]; then
