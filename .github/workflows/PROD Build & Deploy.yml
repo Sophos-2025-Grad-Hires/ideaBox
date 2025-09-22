@@ -58,7 +58,7 @@ jobs:
           git fetch origin develop
 
           # Find Apex classes changed or added in this PR (compared to develop)
-          files=$(git diff --name-only --diff-filter=AM origin/develop...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
+          files=$(git diff --name-only --diff-filter=AM origin/main...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
 
           if [ -z "$files" ]; then
             echo "No Apex classes changed. Skipping tests."
