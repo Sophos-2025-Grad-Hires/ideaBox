@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: patrykacc/sf-cli-setup@v1.1.0
+      - uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f # v1.1.0
 
       - name: Create deploy package
         run: sfdx force:source:convert -d deploy
@@ -25,14 +25,14 @@ jobs:
   QAdeploy:
     runs-on: ubuntu-latest
     needs: QAbuild
-    environment: ITAS029 # subject to change
+    environment: QA # subject to change
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 
 
-      - uses: patrykacc/sf-cli-setup@v1.1.0
+      - uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f # v1.1.0
 
       - name: Download deploy package
         uses: actions/download-artifact@v4
@@ -40,11 +40,16 @@ jobs:
           name: deploy-package
 
       - name: Authenticate with Salesforce
+        env:
+          SF_CONSUMER_KEY: ${{ secrets.SF_CONSUMER_KEY }}
+          SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
+          SF_USERNAME: ${{ secrets.SF_USERNAME }}
         run: |
+          echo "$SF_JWT_KEY" > server.key
           sf org login jwt \
-            --client-id ${{ secrets.SF_CONSUMER_KEY }} \
-            --jwt-key-file <(echo "${{ secrets.SF_JWT_KEY }}") \
-            --username ${{ secrets.SF_USERNAME }} \
+            --client-id "$SF_CONSUMER_KEY" \
+            --jwt-key-file server.key \
+            --username "$SF_USERNAME" \
             --instance-url https://test.salesforce.com \
             --set-default
 
@@ -133,7 +138,7 @@ jobs:
           } >> $GITHUB_OUTPUT
 
       - name: Comment results on PR
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@be17e0c03de886b7aff3fb3224d28bfb6fc5d114
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
