@@ -25,7 +25,7 @@ jobs:
   QAdeploy:
     runs-on: ubuntu-latest
     needs: QAbuild
-    environment: ITAS029 # subject to change
+    environment: QA # subject to change
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

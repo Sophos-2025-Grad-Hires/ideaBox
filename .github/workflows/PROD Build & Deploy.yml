@@ -27,7 +27,7 @@ jobs:
     needs: PRODbuild
     strategy:
       matrix:
-        env: [ITAS019, ITAS029]
+        env: [QA, PROD]
     environment: ${{ matrix.env }}
     steps:
       - name: Checkout code
