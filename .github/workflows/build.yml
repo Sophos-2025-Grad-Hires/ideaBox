@@ -20,7 +20,7 @@ jobs:
     needs: build
     strategy:
       matrix:
-        env: [ITAS019, ITAS029]   # just environment names
+        env: [QA, PROD]   # just environment names
     environment: ${{ matrix.env }}
 
     steps:
