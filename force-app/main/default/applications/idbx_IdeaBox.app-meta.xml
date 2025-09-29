@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#FFFF00</headerColor>
+        <logo>pngtreeshiningbrightlightbulbpngima</logo>
+        <logoVersion>1</logoVersion>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <description>Hub for submitting, sharing, and voting on ideas, to drive innovation and collaboration</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>true</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
+    <label>IdeaBox</label>
+    <navType>Standard</navType>
+    <tabs>idbx_Idea__c</tabs> 
+    <!-- To remove once LWC is done -->
+    <tabs>idbx_Ideas</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>IdeaBox_UtilityBar</utilityBar>
+</CustomApplication>
