@@ -162,7 +162,7 @@
     <userPermissions><enabled>true</enabled><name>MergeTopics</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ModerateChatter</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ModifyAllData</name></userPermissions>
-    <userPermissions><enabled>true</enabled><name>ModifyAllPolicyCenterPolicies</name> </userPermissions>
+    <userPermissions><enabled>true</enabled><name>ModifyAllPolicyCenterPolicies</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ModifyDataClassification</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ModifyMetadata</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>MonitorLoginHistory</name></userPermissions>
@@ -208,7 +208,8 @@
     <userPermissions><enabled>true</enabled><name>UseTeamReassignWizards</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>UseWebLink</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ViewAllData</name></userPermissions>
-    <userPermissions><enabled>true</enabled><name>ViewAllForecasts</name></userPermissions><userPermissions><enabled>true</enabled><name>ViewAllPolicyCenterPolicies</name></userPermissions>
+    <userPermissions><enabled>true</enabled><name>ViewAllForecasts</name></userPermissions>
+    <userPermissions><enabled>true</enabled><name>ViewAllPolicyCenterPolicies</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ViewAllProfiles</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ViewAllUsers</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ViewArchivedArticles</name></userPermissions>
@@ -221,7 +222,7 @@
     <userPermissions><enabled>true</enabled><name>ViewDeveloperName</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ViewDraftArticles</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ViewEmailMessagingSetup</name></userPermissions>
-    <userPermissions><enabled>true</enabled><name>ViewEventLogFiles</name> </userPermissions>
+    <userPermissions><enabled>true</enabled><name>ViewEventLogFiles</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ViewFlowUsageAndFlowEventData</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ViewHealthCheck</name></userPermissions>
     <userPermissions><enabled>true</enabled><name>ViewHelpLink</name></userPermissions>
