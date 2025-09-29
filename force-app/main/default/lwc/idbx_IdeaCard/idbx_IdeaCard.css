@@ -1,0 +1,47 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.idea-card {
+    padding: 16px 12px;
+    background-color: white;
+    height: 205px;
+}
+
+.left-col {
+    padding-left: 12px;
+    gap: 4px;
+}
+
+.right-col {
+    padding: 32px;
+    gap: 4px;
+}
+
+h2 {
+    color: gray;
+}
+
+.description {
+    flex: 1;
+}
+
+.created-info {
+    color: gray;
+}
+
+.points-amount {
+    font-weight: bold;
+}
+
+.status {
+    padding: 8px;
+    width: 172px;
+    background-color: green;
+    color: white;
+    border-radius: 18px;
+    font-weight: bold;
+    align-self: center;
+}
