@@ -17,4 +17,8 @@ export default class Idbx_IdeasPage extends LightningElement {
             this.ideas = undefined;
         }
     }
+
+    get noIdeasAvailable() {
+        return !this.ideas || this.ideas.length === 0;
+    }
 }

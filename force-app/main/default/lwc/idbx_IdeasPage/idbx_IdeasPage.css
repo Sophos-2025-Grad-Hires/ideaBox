@@ -14,3 +14,14 @@
 hr {
     color: lightgray;
 }
+
+.no-idea-message {
+    padding: 48px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 8px 8px gray;
+}
+
+.lightbulb {
+    font-size: 128px;
+}

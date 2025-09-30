@@ -1,10 +1,19 @@
 <template>
     <div class="ideas-background slds-grid slds-grid_align-center">
-        <div class="idea-cards-wrapper">
-            <template for:each={ideas} for:item="idea">
-                <c-idbx_-idea-card key={idea.Id} idea={idea}></c-idbx_-idea-card>
-                <hr key={idea.Id} />
-            </template>
-        </div>
+        <template lwc:if={noIdeasAvailable}>
+            <div class="no-idea-message slds-text-heading_large slds-text-align_center">
+                No ideas for now. Be the first to submit an Idea!
+                <br></br>
+                <span class="lightbulb">💡</span>
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="idea-cards-wrapper">
+                <template for:each={ideas} for:item="idea">
+                    <c-idbx_-idea-card key={idea.Id} idea={idea}></c-idbx_-idea-card>
+                    <hr key={idea.Id} />
+                </template>
+            </div>
+        </template>
     </div>
 </template>
