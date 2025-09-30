@@ -11,7 +11,6 @@ export default class Idbx_IdeasPage extends LightningElement {
         if (data) {
             this.ideas = data;
             this.error = undefined;
-            console.log(data);
         } else if (error) {
             this.error = error;
             this.ideas = undefined;
