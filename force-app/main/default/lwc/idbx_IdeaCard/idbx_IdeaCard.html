@@ -8,7 +8,7 @@
             <p class="description slds-text-heading_small">
                 <lightning-formatted-rich-text value={idea.idbx_Description__c}></lightning-formatted-rich-text>
             </p>
-            <footer class="created-info slds-text-body_regular" aria-label="Created information">Created 09/29/2025 by <a href="https://google.com" target="_blank">Kyle Andaya</a></footer>
+            <footer class="created-info slds-text-body_regular" aria-label="Created information">Created {CreatedDate} by <lightning-formatted-url value={ownerPageURL} label={idea.CreatedBy.Name} target="_blank"></lightning-formatted-url></footer>
         </div>
         <div class="right-col slds-col slds-size_1-of-3 slds-grid slds-grid_vertical slds-grid_align-center slds-text-align_center">
             <div class="points-amount slds-text-heading_large">9999</div>

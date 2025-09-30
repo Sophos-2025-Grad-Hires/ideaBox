@@ -3,7 +3,12 @@ import { NavigationMixin } from 'lightning/navigation';
 
 export default class Idbx_IdeaCard extends NavigationMixin(LightningElement) {
    @api idea;
-   ideaPageURL = 'https://google.com';
+   ideaPageURL;
+   ownerPageURL;
+
+   get CreatedDate() {
+       return new Date(this.idea.CreatedDate).toLocaleDateString();
+   }
 
    connectedCallback() {
         // Generate a URL to the record page
@@ -15,6 +20,16 @@ export default class Idbx_IdeaCard extends NavigationMixin(LightningElement) {
             },
         }).then(url => {
             this.ideaPageURL = url;
+        });
+
+        this[NavigationMixin.GenerateUrl]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.idea.CreatedById,
+                actionName: 'view',
+            },
+        }).then(url => {
+            this.ownerPageURL = url;
         });
     }
 }
