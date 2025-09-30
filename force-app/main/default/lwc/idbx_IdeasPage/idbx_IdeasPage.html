@@ -1,11 +1,10 @@
 <template>
-    <div class="ideas-background">
+    <div class="ideas-background slds-grid slds-grid_align-center">
         <div class="idea-cards-wrapper">
-            <c-idbx_-idea-card></c-idbx_-idea-card>
-            <hr>
-            <c-idbx_-idea-card></c-idbx_-idea-card>
-            <hr>
-            <c-idbx_-idea-card></c-idbx_-idea-card>
+            <template for:each={ideas} for:item="idea">
+                <c-idbx_-idea-card key={idea.Id} idea={idea}></c-idbx_-idea-card>
+                <hr key={idea.Id} />
+            </template>
         </div>
     </div>
 </template>

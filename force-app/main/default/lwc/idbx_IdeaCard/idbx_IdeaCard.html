@@ -1,15 +1,17 @@
 <template>
     <div class="slds-grid slds-m-around_medium idea-card">
         <div class="left-col slds-col slds-size_2-of-3 slds-grid slds-grid_vertical slds-grid_align-center">
-            <h1><a class="slds-text-heading_medium" href="https://google.com">Idea Title</a></h1>
-            <h2 class="slds-text-heading_small">Idea Category</h2>
-            <p class="description slds-text-body_regular">Idea description: Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facilis nostrum consectetur odio amet impedit. Velit voluptas iusto vitae magnam maxime assumenda suscipit deserunt blanditiis. Praesentium iste vel laborum cupiditate quos.</p>
+            <h1><a class="slds-text-heading_medium" href="https://google.com">{idea.Name}</a></h1>
+            <h2 class="slds-text-heading_small">{idea.idbx_Category__c}</h2>
+            <p class="description slds-text-body_regular">
+                <lightning-formatted-rich-text value={idea.idbx_Description__c}></lightning-formatted-rich-text>
+            </p>
             <footer class="created-info slds-text-body_regular" aria-label="Created information">Created 09/29/2025 by <a href="https://google.com" target="_blank">Kyle Andaya</a></footer>
         </div>
         <div class="right-col slds-col slds-size_1-of-3 slds-grid slds-grid_vertical slds-grid_align-center slds-text-align_center">
             <div class="points-amount slds-text-heading_large">9999</div>
             <div class="points-text slds-text-heading_small">Points</div>
-            <div class="status slds-text-heading_small slds-text-align_center">DELIVERED</div>
+            <div class="status slds-text-heading_small slds-text-align_center">{idea.idbx_Status__c}</div>
         </div>
     </div>
 </template>

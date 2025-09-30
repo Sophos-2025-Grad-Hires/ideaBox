@@ -1,3 +1,5 @@
-import { LightningElement } from 'lwc';
+import { api, LightningElement } from 'lwc';
 
-export default class Idbx_IdeaCard extends LightningElement {}
+export default class Idbx_IdeaCard extends LightningElement {
+   @api idea;
+}

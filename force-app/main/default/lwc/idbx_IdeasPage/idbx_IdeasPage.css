@@ -4,9 +4,8 @@
     padding: 0;
 }
 
-
 .idea-cards-wrapper {
-    margin: 0px 400px;
+    width: 1096px;
     box-shadow: 0px 8px 8px gray;
     border-radius: 8px;
     overflow: hidden;
