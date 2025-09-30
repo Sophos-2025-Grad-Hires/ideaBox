@@ -84,7 +84,20 @@
         </connector>
         <fields>
             <name>idbx_submissionHeader</name>
-            <fieldText>&lt;h2 style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(0, 127, 182);&quot;&gt;Submit Your Idea!&lt;/span&gt;&lt;/h2&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14px;&quot;&gt;Every great change starts with one idea. What’s yours?&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;h1 style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;color: rgb(0, 135, 192);&quot;&gt;Submit Your Idea!&lt;/strong&gt;&lt;/h1&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>idbx_submissionTitleInstruction</name>
+            <fieldText>&lt;p&gt;Give your idea a short, clear name that captures its essence.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -112,11 +125,9 @@
             </styleProperties>
         </fields>
         <fields>
-            <name>idbx_submissionDescription</name>
-            <fieldText>Description</fieldText>
-            <fieldType>LargeTextArea</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
+            <name>idbx_submissionCategoryInstruction</name>
+            <fieldText>&lt;p&gt;Choose the category that best fits your idea’s focus or theme.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
                     <stringValue>top</stringValue>
@@ -132,6 +143,34 @@
             <dataType>String</dataType>
             <fieldText>Category</fieldText>
             <fieldType>DropdownBox</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>idbx_submissionDescriptionInstruction</name>
+            <fieldText>&lt;p&gt;Explain your idea in detail:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;em&gt;What it is?&lt;/em&gt;&lt;/li&gt;&lt;li&gt;&lt;em&gt;Why it matters? &lt;/em&gt;&lt;/li&gt;&lt;li&gt;&lt;em&gt;How it works?&lt;/em&gt;&lt;/li&gt;&lt;/ul&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>idbx_submissionDescription</name>
+            <fieldText>Description</fieldText>
+            <fieldType>LargeTextArea</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <styleProperties>
@@ -159,7 +198,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>idbx_submissionMessage</name>
-            <fieldText>&lt;h3 style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;color: rgb(43, 128, 0);&quot;&gt;Your idea has been submitted! &lt;/strong&gt;&lt;/h3&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;View Submission Record &lt;/span&gt;&lt;a href=&quot;/{!idbx_ideaId}&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot; style=&quot;color: rgb(0, 77, 255);&quot;&gt;&lt;u&gt;here&lt;/u&gt;&lt;/a&gt;&lt;u style=&quot;color: rgb(0, 77, 255);&quot;&gt;!&lt;/u&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;h1 style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;color: rgb(43, 128, 0);&quot;&gt;Your idea has been submitted! &lt;/strong&gt;&lt;/h1&gt;&lt;h5 style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;View Submission Record &lt;/span&gt;&lt;a href=&quot;/{!idbx_ideaId}&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot; style=&quot;color: rgb(0, 77, 255);&quot;&gt;&lt;u&gt;here&lt;/u&gt;&lt;/a&gt;&lt;u style=&quot;color: rgb(0, 77, 255);&quot;&gt;!&lt;/u&gt;&lt;/h5&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>

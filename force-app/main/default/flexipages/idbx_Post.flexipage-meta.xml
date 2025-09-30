@@ -3,6 +3,26 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>idbx_postTabSubmissionHeader</componentName>
+                <identifier>c_idbx_postTabSubmissionHeader</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>region1</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>idbx_postTabSubmissionSidebar</componentName>
+                <identifier>c_idbx_postTabSubmissionSidebar</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>region2</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>flowArguments</name>
                     <value>[]</value>
@@ -13,18 +33,18 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>idbx_submissionForm</value>
+                    <value>idbx_FL_SubmissionForm_Screen</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
                 <identifier>flowruntime_interview</identifier>
             </componentInstance>
         </itemInstances>
-        <name>main</name>
+        <name>region3</name>
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>Post</masterLabel>
     <template>
-        <name>flexipage:defaultAppHomeTemplate</name>
+        <name>flexipage:appHomeTemplateHeaderTwoColumnsLeftSidebar</name>
     </template>
     <type>AppPage</type>
 </FlexiPage>
