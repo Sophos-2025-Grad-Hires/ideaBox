@@ -15,8 +15,6 @@
     <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
     <label>IdeaBox</label>
     <navType>Standard</navType>
-    <tabs>idbx_Idea__c</tabs> 
-    <!-- To remove once LWC is done -->
     <tabs>idbx_Ideas</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>IdeaBox_UtilityBar</utilityBar>
