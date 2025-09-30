@@ -49,23 +49,23 @@ h2 {
 }
 
 .status-open {
-    background-color: lightgray;
+    background-color: #e2e2e2;
     color: black;
 }
 
 .status-approved {
-    background-color: rgb(255, 160, 3);
+    background-color: #fdbc25;
     color: black;
 }
 
 .status-rejected {
-    background-color: rgb(200, 0, 0);
+    background-color: #860000;
 }
 
 .status-in-development {
-    background-color: rgb(0, 0, 200);
+    background-color: #004786;
 }
 
 .status-delivered {
-    background-color: rgb(0, 128, 0);
+    background-color: #04844b;
 }
