@@ -15,8 +15,8 @@
     <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
     <label>IdeaBox</label>
     <navType>Standard</navType>
-    <tabs>idbx_Ideas</tabs>
     <tabs>idbx_Post</tabs>
+    <tabs>idbx_Ideas</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>IdeaBox_UtilityBar</utilityBar>
 </CustomApplication>
