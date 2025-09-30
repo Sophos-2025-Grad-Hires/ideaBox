@@ -1,7 +1,9 @@
 <template>
     <div class="slds-grid slds-m-around_medium idea-card">
         <div class="left-col slds-col slds-size_2-of-3 slds-grid slds-grid_vertical slds-grid_align-center">
-            <h1><a class="slds-text-heading_medium" href="https://google.com">{idea.Name}</a></h1>
+            <h1>
+                <lightning-formatted-url class="slds-text-heading_medium" value={ideaPageURL} label={idea.Name} target="_blank"></lightning-formatted-url>
+            </h1>
             <h2 class="slds-text-heading_small">{idea.idbx_Category__c}</h2>
             <p class="description slds-text-body_regular">
                 <lightning-formatted-rich-text value={idea.idbx_Description__c}></lightning-formatted-rich-text>
