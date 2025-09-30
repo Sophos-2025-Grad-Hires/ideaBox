@@ -95,7 +95,7 @@ jobs:
             --source-dir force-app \
             --wait 30 \
             --test-level RunSpecifiedTests \
-            --tests ${{ steps.detect.outputs.test_classes }} \
+            --tests "${{ steps.detect.outputs.test_classes }} ContactBuilderTest AccountShareSelectorTest" \
             --json > deploy-results.json
         continue-on-error: true   # step won’t block next step
 
