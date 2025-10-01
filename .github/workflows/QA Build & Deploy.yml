@@ -149,3 +149,77 @@ jobs:
       - name: Fail job if deploy step failed
         if: steps.deploy.outcome == 'failure' || steps.deploy_no_tests.outcome == 'failure'
         run: exit 1
+        
+  QApostDeploy:
+    runs-on: ubuntu-latest
+    needs: QAdeploy
+    environment: QAapex
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f
+
+      - name: Detect changed post-deploy Apex scripts
+        id: detect
+        run: |
+          BASE_BRANCH="${{ github.base_ref || 'develop' }}"
+          echo "Using base branch: $BASE_BRANCH"
+
+          files=$(git fetch origin $BASE_BRANCH && \
+            git diff --name-only --diff-filter=AM origin/$BASE_BRANCH...HEAD | grep "scripts/post/apex/.*\.apex" || true)
+
+          if [ -z "$files" ]; then
+            echo "No post-deploy Apex scripts changed. Skipping."
+            echo "run_scripts=false" >> $GITHUB_OUTPUT
+          else
+            echo "Detected scripts:"
+            echo "$files"
+            echo "run_scripts=true" >> $GITHUB_OUTPUT
+            echo "scripts=$files" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Authenticate with Salesforce
+        env:
+          SF_CONSUMER_KEY: ${{ secrets.SF_CONSUMER_KEY }}
+          SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
+          SF_USERNAME: ${{ secrets.SF_USERNAME }}
+        run: |
+          echo "$SF_JWT_KEY" > server.key
+          sf org login jwt \
+            --client-id "$SF_CONSUMER_KEY" \
+            --jwt-key-file server.key \
+            --username "$SF_USERNAME" \
+            --instance-url https://test.salesforce.com \
+            --alias QAapex
+
+      - name: Validate Apex scripts
+        if: steps.detect.outputs.run_scripts == 'true'
+        run: |
+          for script in ${{ steps.detect.outputs.scripts }}; do
+            echo "Validating $script"
+            if [ ! -s "$script" ]; then
+              echo "Error: $script is empty"
+              exit 1
+            fi
+            if [[ "$script" != *.apex ]]; then
+              echo "Error: $script does not have .apex extension"
+              exit 1
+            fi
+            echo "Validation passed ✅"
+          done
+
+      - name: Execute post-deploy Apex scripts
+        if: steps.detect.outputs.run_scripts == 'true'
+        run: |
+          for script in ${{ steps.detect.outputs.scripts }}; do
+            echo "Running script: $script on QAapex"
+            sf apex run --file "$script" --target-org QAapex
+            if [ $? -ne 0 ]; then
+              echo "Script failed: $script"
+              exit 1
+            fi
+          done
