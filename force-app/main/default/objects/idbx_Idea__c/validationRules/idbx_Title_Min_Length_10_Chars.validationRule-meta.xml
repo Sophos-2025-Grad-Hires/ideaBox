@@ -2,7 +2,7 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>idbx_Title_Min_Length_10_Chars</fullName>
     <active>true</active>
-    <description>The Description must be at least 20 characters long for the every submission.</description>
+    <description>The Title must be at least 10 characters long for every submission.</description>
     <errorConditionFormula>LEN(Name) &lt; 10</errorConditionFormula>
     <errorDisplayField>Name</errorDisplayField>
     <errorMessage>The Title must be at least 10 characters long.</errorMessage>
