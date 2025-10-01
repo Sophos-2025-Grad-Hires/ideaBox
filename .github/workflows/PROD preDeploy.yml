@@ -2,9 +2,7 @@ name: Pre-Deployment Apex Scripts
 
 on:
   pull_request:
-    branches:
-      - develop
-      - main
+    branches: [ main ]
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
@@ -13,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: [QAapex]
-
+        env: [PRODapex]
     environment: ${{ matrix.env }}
 
     steps:
