@@ -2,7 +2,7 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>idbx_Description_Min_Length_20_Chars</fullName>
     <active>true</active>
-    <description>The Description must be at least 20 characters long for the every submission.</description>
+    <description>The Description must be at least 20 characters long for every submission.</description>
     <errorConditionFormula>LEN(idbx_Description__c)&lt;20</errorConditionFormula>
     <errorDisplayField>idbx_Description__c</errorDisplayField>
     <errorMessage>The Description must be at least 20 characters long</errorMessage>
