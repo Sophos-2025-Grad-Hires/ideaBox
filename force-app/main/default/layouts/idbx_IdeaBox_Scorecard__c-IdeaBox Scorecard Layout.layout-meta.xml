@@ -12,7 +12,9 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
+              
                 <field>idbx_IdeaBox_User__c</field>
+
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -51,10 +53,12 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
+
     <relatedLists>
         <fields>NAME</fields>
         <relatedList>idbx_Idea__c.idbx_IdeaBox_Scorecard__c</relatedList>
     </relatedLists>
+
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>

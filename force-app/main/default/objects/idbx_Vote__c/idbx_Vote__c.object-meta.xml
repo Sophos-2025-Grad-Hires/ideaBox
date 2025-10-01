@@ -143,6 +143,7 @@
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
+    <description>Indicates voting points of each idea submitted in Ideabox.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
@@ -152,18 +153,15 @@
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
-    <externalSharingModel>Private</externalSharingModel>
-    <label>IdeaBox Scorecard</label>
+    <externalSharingModel>ControlledByParent</externalSharingModel>
+    <label>Vote</label>
     <nameField>
         <encryptionScheme>None</encryptionScheme>
-        <label>IdeaBox Scorecard Name</label>
+        <label>Vote Name</label>
         <type>Text</type>
     </nameField>
-    <pluralLabel>IdeaBox Scorecards</pluralLabel>
+    <pluralLabel>Votes</pluralLabel>
     <searchLayouts></searchLayouts>
-  
-    <sharingModel>ReadWrite</sharingModel>
-
-    <startsWith>Vowel</startsWith>
+    <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

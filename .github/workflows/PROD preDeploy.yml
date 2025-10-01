@@ -1,0 +1,91 @@
+name: Pre-Deployment Apex Scripts
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  preDeploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: [PRODapex]
+    environment: ${{ matrix.env }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f # v1.1.0
+
+      - name: Detect changed pre-deploy Apex scripts
+        id: detect
+        run: |
+          # Determine base branch depending on target
+          if [[ "${{ github.base_ref }}" == "develop" ]]; then
+            BASE_BRANCH="develop"
+          else
+            BASE_BRANCH="main"
+          fi
+
+          echo "Using base branch: $BASE_BRANCH"
+
+          # Detect modified or added scripts
+          files=$(git fetch origin $BASE_BRANCH && git diff --name-only --diff-filter=AM origin/$BASE_BRANCH...HEAD | grep "scripts/pre/apex/.*\.apex" || true)
+
+          if [ -z "$files" ]; then
+            echo "No pre-deploy Apex scripts changed. Skipping."
+            echo "run_scripts=false" >> $GITHUB_OUTPUT
+          else
+            echo "Detected scripts:"
+            echo "$files"
+            echo "run_scripts=true" >> $GITHUB_OUTPUT
+            echo "scripts=$files" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Authenticate with Salesforce
+        if: steps.detect.outputs.run_scripts == 'true'
+        env:
+          SF_CONSUMER_KEY: ${{ secrets.SF_CONSUMER_KEY }}
+          SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
+          SF_USERNAME: ${{ secrets.SF_USERNAME }}
+        run: |
+          echo "$SF_JWT_KEY" > server.key
+          sf org login jwt \
+            --client-id "$SF_CONSUMER_KEY" \
+            --jwt-key-file server.key \
+            --username "$SF_USERNAME" \
+            --instance-url https://test.salesforce.com \
+            --alias "${{ matrix.env }}"
+
+      - name: Validate Apex scripts
+        if: steps.detect.outputs.run_scripts == 'true'
+        run: |
+          for script in ${{ steps.detect.outputs.scripts }}; do
+            echo "Validating $script"
+            if [ ! -s "$script" ]; then
+              echo "Error: $script is empty"
+              exit 1
+            fi
+            if [[ "$script" != *.apex ]]; then
+              echo "Error: $script does not have .apex extension"
+              exit 1
+            fi
+            echo "Validation passed ✅"
+          done
+          
+      - name: Execute pre-deploy Apex scripts
+        if: steps.detect.outputs.run_scripts == 'true'
+        run: |
+          for script in ${{ steps.detect.outputs.scripts }}; do
+            echo "Running script: $script on ${{ matrix.env }}"
+            sf apex run --file "$script" --target-org ${{ matrix.env }}
+            if [ $? -ne 0 ]; then
+              echo "Script failed: $script"
+              exit 1
+            fi
+          done
