@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: [QA, PROD]
+        env: ${{ github.base_ref == 'develop' && startsWith(github.head_ref, 'feature/') && '["QAapex"]' || '["QAapex","PRODapex"]' }}
     environment: ${{ matrix.env }}
     steps:
       - name: Checkout code
