@@ -35,9 +35,12 @@ jobs:
             exit 0
           fi
 
-      - uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f
-
+      - name: Install Salesforce CLI
+        if: steps.detect.outputs.run_scripts == 'true'
+        uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f
+          
       - name: Authenticate with Salesforce
+        if: steps.detect.outputs.run_scripts == 'true'
         env:
           SF_CONSUMER_KEY: ${{ secrets.SF_CONSUMER_KEY }}
           SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
@@ -68,6 +71,7 @@ jobs:
           done
 
       - name: Execute pre-deploy Apex scripts
+        if: steps.detect.outputs.run_scripts == 'true'
         run: |
           for script in ${{ steps.detect.outputs.scripts }}; do
             echo "Running script: $script on QA"
@@ -233,4 +237,3 @@ jobs:
               exit 1
             fi
           done
-
