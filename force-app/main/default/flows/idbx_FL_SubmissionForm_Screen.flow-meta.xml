@@ -2,6 +2,22 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <apiVersion>64.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <constants>
+        <description>Sets minimum length of Idea Description.</description>
+        <name>idbx_minLengthDescription</name>
+        <dataType>Number</dataType>
+        <value>
+            <numberValue>20.0</numberValue>
+        </value>
+    </constants>
+    <constants>
+        <description>Sets minimum length of Idea Title.</description>
+        <name>idbx_minLengthTitle</name>
+        <dataType>Number</dataType>
+        <value>
+            <numberValue>10.0</numberValue>
+        </value>
+    </constants>
     <customProperties>
         <name>ScreenProgressIndicator</name>
         <value>
@@ -123,6 +139,10 @@
                     <stringValue>12</stringValue>
                 </width>
             </styleProperties>
+            <validationRule>
+                <errorMessage>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;⚠️&lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt; &lt;/strong&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); font-size: 11px; font-family: &amp;quot;Atlassian Sans&amp;quot;, ui-sans-serif, -apple-system, BlinkMacSystemFont, &amp;quot;Segoe UI&amp;quot;, Ubuntu, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; color: rgb(255, 0, 0);&quot;&gt;The Title must be at least 10 characters long.&lt;/strong&gt;&lt;/p&gt;</errorMessage>
+                <formulaExpression>LEN({!idbx_submissionTitle}) &gt;= {!idbx_minLengthTitle}</formulaExpression>
+            </validationRule>
         </fields>
         <fields>
             <name>idbx_submissionCategoryInstruction</name>
@@ -181,6 +201,10 @@
                     <stringValue>12</stringValue>
                 </width>
             </styleProperties>
+            <validationRule>
+                <errorMessage>&lt;p&gt;⚠️&lt;strong&gt; &lt;/strong&gt;&lt;strong style=&quot;color: rgb(255, 0, 0); font-family: &amp;quot;Atlassian Sans&amp;quot;, ui-sans-serif, -apple-system, BlinkMacSystemFont, &amp;quot;Segoe UI&amp;quot;, Ubuntu, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);&quot;&gt;The Description must be at least 20 characters long.&lt;/strong&gt;&lt;/p&gt;</errorMessage>
+                <formulaExpression>LEN({!idbx_submissionDescription})&gt;= {!idbx_minLengthDescription}</formulaExpression>
+            </validationRule>
         </fields>
         <helpText>&lt;p&gt;Every great change starts with one idea. What’s yours?&lt;/p&gt;</helpText>
         <nextOrFinishButtonLabel>Submit</nextOrFinishButtonLabel>
