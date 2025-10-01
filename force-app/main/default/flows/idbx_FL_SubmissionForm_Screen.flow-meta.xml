@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <constants>
+        <description>Sets minimum length of Idea Description.</description>
+        <name>idbx_minLengthDescription</name>
+        <dataType>Number</dataType>
+        <value>
+            <numberValue>20.0</numberValue>
+        </value>
+    </constants>
+    <constants>
+        <description>Sets minimum length of Idea Title.</description>
+        <name>idbx_minLengthTitle</name>
+        <dataType>Number</dataType>
+        <value>
+            <numberValue>10.0</numberValue>
+        </value>
+    </constants>
+    <customProperties>
+        <name>ScreenProgressIndicator</name>
+        <value>
+            <stringValue>{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
+        </value>
+    </customProperties>
+    <description>Enables users to submit innovative ideas directly into the Ideabox through guided screen.</description>
+    <dynamicChoiceSets>
+        <description>Uses picklist from Category Field of Idea Object</description>
+        <name>idbx_categoryPicklist</name>
+        <dataType>Picklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>idbx_Category__c</picklistField>
+        <picklistObject>idbx_Idea__c</picklistObject>
+    </dynamicChoiceSets>
+    <environments>Default</environments>
+    <interviewLabel>Create Record on Idea Object {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Ideabox Submission Form</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordCreates>
+        <description>Create Record on Idea Object</description>
+        <name>idbx_createIdea</name>
+        <label>Create Idea</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignRecordIdToReference>idbx_ideaId</assignRecordIdToReference>
+        <connector>
+            <targetReference>idbx_submissionConfirmation</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>idbx_submissionTitle</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>idbx_Category__c</field>
+            <value>
+                <elementReference>idbx_submissionCategory</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>idbx_Description__c</field>
+            <value>
+                <elementReference>idbx_submissionDescription</elementReference>
+            </value>
+        </inputAssignments>
+        <object>idbx_Idea__c</object>
+    </recordCreates>
+    <screens>
+        <description>Guided screen flow for submission of idea in the IdeaBox</description>
+        <name>idbx_ideaSubmissionForm</name>
+        <label>Submit New Idea</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>idbx_createIdea</targetReference>
+        </connector>
+        <fields>
+            <name>idbx_submissionHeader</name>
+            <fieldText>&lt;h1 style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;color: rgb(0, 135, 192);&quot;&gt;Submit Your Idea!&lt;/strong&gt;&lt;/h1&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>idbx_submissionTitleInstruction</name>
+            <fieldText>&lt;p&gt;Give your idea a short, clear name that captures its essence.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>idbx_submissionTitle</name>
+            <dataType>String</dataType>
+            <fieldText>Title</fieldText>
+            <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+            <validationRule>
+                <errorMessage>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;⚠️&lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt; &lt;/strong&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); font-size: 11px; font-family: &amp;quot;Atlassian Sans&amp;quot;, ui-sans-serif, -apple-system, BlinkMacSystemFont, &amp;quot;Segoe UI&amp;quot;, Ubuntu, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; color: rgb(255, 0, 0);&quot;&gt;The Title must be at least 10 characters long.&lt;/strong&gt;&lt;/p&gt;</errorMessage>
+                <formulaExpression>LEN({!idbx_submissionTitle}) &gt;= {!idbx_minLengthTitle}</formulaExpression>
+            </validationRule>
+        </fields>
+        <fields>
+            <name>idbx_submissionCategoryInstruction</name>
+            <fieldText>&lt;p&gt;Choose the category that best fits your idea’s focus or theme.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>idbx_submissionCategory</name>
+            <choiceReferences>idbx_categoryPicklist</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Category</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>idbx_submissionDescriptionInstruction</name>
+            <fieldText>&lt;p&gt;Explain your idea in detail:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;em&gt;What it is?&lt;/em&gt;&lt;/li&gt;&lt;li&gt;&lt;em&gt;Why it matters? &lt;/em&gt;&lt;/li&gt;&lt;li&gt;&lt;em&gt;How it works?&lt;/em&gt;&lt;/li&gt;&lt;/ul&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>idbx_submissionDescription</name>
+            <fieldText>Description</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+            <validationRule>
+                <errorMessage>&lt;p&gt;⚠️&lt;strong&gt; &lt;/strong&gt;&lt;strong style=&quot;color: rgb(255, 0, 0); font-family: &amp;quot;Atlassian Sans&amp;quot;, ui-sans-serif, -apple-system, BlinkMacSystemFont, &amp;quot;Segoe UI&amp;quot;, Ubuntu, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);&quot;&gt;The Description must be at least 20 characters long.&lt;/strong&gt;&lt;/p&gt;</errorMessage>
+                <formulaExpression>LEN({!idbx_submissionDescription})&gt;= {!idbx_minLengthDescription}</formulaExpression>
+            </validationRule>
+        </fields>
+        <helpText>&lt;p&gt;Every great change starts with one idea. What’s yours?&lt;/p&gt;</helpText>
+        <nextOrFinishButtonLabel>Submit</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <description>Informs user that their submission of idea is successful.</description>
+        <name>idbx_submissionConfirmation</name>
+        <label>Submission Confirmation</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>idbx_submissionMessage</name>
+            <fieldText>&lt;h1 style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;color: rgb(43, 128, 0);&quot;&gt;Your idea has been submitted! &lt;/strong&gt;&lt;/h1&gt;&lt;h5 style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;View Submission Record &lt;/span&gt;&lt;a href=&quot;/{!idbx_ideaId}&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot; style=&quot;color: rgb(0, 77, 255);&quot;&gt;&lt;u&gt;here&lt;/u&gt;&lt;/a&gt;&lt;u style=&quot;color: rgb(0, 77, 255);&quot;&gt;!&lt;/u&gt;&lt;/h5&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <nextOrFinishButtonLabel>Submit New Idea</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>idbx_ideaSubmissionForm</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>idbx_Idea</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>idbx_Idea__c</objectType>
+    </variables>
+    <variables>
+        <name>idbx_ideaId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+</Flow>
