@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Automerge PR and post comment
-        uses: pascalgn/automerge-action@v0.16.4
+        uses: pascalgn/automerge-action@7961b8b5eec56cc088c140b56d864285eabd3f67
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           MERGE_LABELS: "automerge"          # Only merge if PR has this label
           MERGE_REMOVE_LABELS: "automerge"  # Remove after merge
           MERGE_METHOD: merge
+          MERGE_DELETE_BRANCH: true
