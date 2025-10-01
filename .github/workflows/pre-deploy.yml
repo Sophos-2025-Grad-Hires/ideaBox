@@ -13,10 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: [QAapex, PRODapex]
-        exclude:
-          - env: PRODapex
-            if: ${{ github.base_ref == 'develop' && startsWith(github.head_ref, 'feature/') }}
+        env: [QAapex]
 
     environment: ${{ matrix.env }}
 
