@@ -61,7 +61,7 @@ jobs:
             --jwt-key-file server.key \
             --username "$SF_USERNAME" \
             --instance-url https://test.salesforce.com \
-            --set-default
+            --alias "${{ matrix.env }}"
 
       - name: Validate Apex scripts
         if: steps.detect.outputs.run_scripts == 'true'
