@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: [ITAS010, ITAS026]
+        env: [QA, PROD]
     environment: ${{ matrix.env }}
     steps:
       - name: Checkout code
