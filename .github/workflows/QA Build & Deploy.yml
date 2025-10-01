@@ -141,19 +141,23 @@ jobs:
 
       - name: Deploy to QA
         run: |
-          if [ "${{ steps.detect.outputs.run_tests }}" == "true" ]; then
-            echo "Running RunSpecifiedTests for: ${{ steps.detect.outputs.test_classes }}"
+          TESTS="${{ steps.detect.outputs.test_classes }}"
+          RUN_TESTS="${{ steps.detect.outputs.run_tests }}"
+
+          if [ "$RUN_TESTS" = "true" ] && [ -n "$TESTS" ]; then
+            echo "Running RunSpecifiedTests for: $TESTS"
             sf project deploy start \
               --source-dir force-app \
               --wait 30 \
               --test-level RunSpecifiedTests \
-              --tests ${{ steps.detect.outputs.test_classes }}
+              --tests $TESTS
           else
-            echo "No specific test classes detected. Running RunLocalTests."
+            echo "No specific test classes detected or empty. Running RunLocalTests."
             sf project deploy start \
               --source-dir force-app \
               --wait 30 \
               --test-level RunLocalTests
+          fi
 
   QApostDeploy:
     runs-on: ubuntu-latest
