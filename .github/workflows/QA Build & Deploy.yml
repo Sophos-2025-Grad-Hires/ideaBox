@@ -16,22 +16,26 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f
-
       - name: Detect pre-deploy Apex scripts
         id: detect
         run: |
-          # List all pre-deploy Apex scripts
-          files=$(ls scripts/pre/apex/*.apex 2>/dev/null || true)
-
-          if [ -z "$files" ]; then
-            echo "No pre-deploy Apex scripts found. Skipping."
-            echo "run_scripts=false" >> $GITHUB_OUTPUT
+          SCRIPTS_DIR="scripts/pre/apex"
+          if [ -d "$SCRIPTS_DIR" ]; then
+            scripts=$(find "$SCRIPTS_DIR" -type f -name "*.apex")
+            if [ -z "$scripts" ]; then
+              echo "No pre-deploy scripts found. Exiting job."
+              exit 0
+            else
+              echo "Detected pre-deploy scripts:"
+              echo "$scripts"
+              echo "scripts=$scripts" >> $GITHUB_OUTPUT
+            fi
           else
-            echo "Detected scripts:"
-            echo "$files"
-            echo "run_scripts=true" >> $GITHUB_OUTPUT
-            echo "scripts=$files" >> $GITHUB_OUTPUT
+            echo "Directory $SCRIPTS_DIR does not exist. Exiting job."
+            exit 0
+          fi
+
+      - uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f
 
       - name: Authenticate with Salesforce
         env:
@@ -45,9 +49,9 @@ jobs:
             --jwt-key-file server.key \
             --username "$SF_USERNAME" \
             --instance-url https://test.salesforce.com \
-            --alias QA
-
-      - name: Validate pre-deploy Apex scripts
+            --alias QAapex
+            
+      - name: Validate Apex scripts
         if: steps.detect.outputs.run_scripts == 'true'
         run: |
           for script in ${{ steps.detect.outputs.scripts }}; do
@@ -64,7 +68,6 @@ jobs:
           done
 
       - name: Execute pre-deploy Apex scripts
-        if: steps.detect.outputs.run_scripts == 'true'
         run: |
           for script in ${{ steps.detect.outputs.scripts }}; do
             echo "Running script: $script on QA"
@@ -163,8 +166,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f
-
       - name: Detect post-deploy Apex scripts
         id: detect
         run: |
@@ -174,13 +175,20 @@ jobs:
           if [ -z "$files" ]; then
             echo "No post-deploy Apex scripts found. Skipping."
             echo "run_scripts=false" >> $GITHUB_OUTPUT
+            exit 0
           else
             echo "Detected scripts:"
             echo "$files"
             echo "run_scripts=true" >> $GITHUB_OUTPUT
             echo "scripts=$files" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install Salesforce CLI
+        if: steps.detect.outputs.run_scripts == 'true'
+        uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f
 
       - name: Authenticate with Salesforce
+        if: steps.detect.outputs.run_scripts == 'true'
         env:
           SF_CONSUMER_KEY: ${{ secrets.SF_CONSUMER_KEY }}
           SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
@@ -221,3 +229,4 @@ jobs:
               exit 1
             fi
           done
+
