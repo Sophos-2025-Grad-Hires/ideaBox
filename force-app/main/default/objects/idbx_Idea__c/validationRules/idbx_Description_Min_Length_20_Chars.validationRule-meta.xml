@@ -5,5 +5,5 @@
     <description>The Description must be at least 20 characters long for every submission.</description>
     <errorConditionFormula>LEN(idbx_Description__c)&lt;20</errorConditionFormula>
     <errorDisplayField>idbx_Description__c</errorDisplayField>
-    <errorMessage>The Description must be at least 20 characters long</errorMessage>
+    <errorMessage>The Description must be at least 20 characters long.</errorMessage>
 </ValidationRule>
