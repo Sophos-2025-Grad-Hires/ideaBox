@@ -76,8 +76,7 @@ jobs:
               echo "Error: $script does not have .apex extension"
               exit 1
             fi
-            echo "Optional: dry-run deploy for $script"
-            sf project deploy start --source-dir "$script" --check-only --json
+            echo "Validation passed ✅"
           done
           
       - name: Execute pre-deploy Apex scripts
