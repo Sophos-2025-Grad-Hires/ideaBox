@@ -84,7 +84,7 @@ jobs:
         run: |
           for script in ${{ steps.detect.outputs.scripts }}; do
             echo "Running script: $script on ${{ matrix.env }}"
-            sf apex run script --file "$script" --target-org ${{ matrix.env }}
+            sf apex run --file "$script" --target-org ${{ matrix.env }}
             if [ $? -ne 0 ]; then
               echo "Script failed: $script"
               exit 1
