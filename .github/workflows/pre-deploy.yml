@@ -13,8 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: ${{ github.base_ref == 'develop' && startsWith(github.head_ref, 'feature/') && '["QAapex"]' || '["QAapex","PRODapex"]' }}
+        env: [QAapex, PRODapex]
+        exclude:
+          - env: PRODapex
+            if: ${{ github.base_ref == 'develop' && startsWith(github.head_ref, 'feature/') }}
+
     environment: ${{ matrix.env }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
