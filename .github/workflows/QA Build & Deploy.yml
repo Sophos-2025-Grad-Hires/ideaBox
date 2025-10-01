@@ -1,12 +1,80 @@
-name: SF Package and Deploy to QA
+name: QA Build & Deploy
 
 on:
-  pull_request:
+  push:
     branches: [ develop ]
-    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:
+  QApreDeploy:
+    runs-on: ubuntu-latest
+    environment: QA
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f
+
+      - name: Detect pre-deploy Apex scripts
+        id: detect
+        run: |
+          # List all pre-deploy Apex scripts
+          files=$(ls scripts/pre/apex/*.apex 2>/dev/null || true)
+
+          if [ -z "$files" ]; then
+            echo "No pre-deploy Apex scripts found. Skipping."
+            echo "run_scripts=false" >> $GITHUB_OUTPUT
+          else
+            echo "Detected scripts:"
+            echo "$files"
+            echo "run_scripts=true" >> $GITHUB_OUTPUT
+            echo "scripts=$files" >> $GITHUB_OUTPUT
+
+      - name: Authenticate with Salesforce
+        env:
+          SF_CONSUMER_KEY: ${{ secrets.SF_CONSUMER_KEY }}
+          SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
+          SF_USERNAME: ${{ secrets.SF_USERNAME }}
+        run: |
+          echo "$SF_JWT_KEY" > server.key
+          sf org login jwt \
+            --client-id "$SF_CONSUMER_KEY" \
+            --jwt-key-file server.key \
+            --username "$SF_USERNAME" \
+            --instance-url https://test.salesforce.com \
+            --alias QA
+
+      - name: Validate pre-deploy Apex scripts
+        if: steps.detect.outputs.run_scripts == 'true'
+        run: |
+          for script in ${{ steps.detect.outputs.scripts }}; do
+            echo "Validating $script"
+            if [ ! -s "$script" ]; then
+              echo "Error: $script is empty"
+              exit 1
+            fi
+            if [[ "$script" != *.apex ]]; then
+              echo "Error: $script does not have .apex extension"
+              exit 1
+            fi
+            echo "Validation passed ✅"
+          done
+
+      - name: Execute pre-deploy Apex scripts
+        if: steps.detect.outputs.run_scripts == 'true'
+        run: |
+          for script in ${{ steps.detect.outputs.scripts }}; do
+            echo "Running script: $script on QA"
+            sf apex run --file "$script" --target-org QA
+            if [ $? -ne 0 ]; then
+              echo "Script failed: $script"
+              exit 1
+            fi
+          done
+
   QAbuild:
     runs-on: ubuntu-latest
     steps:
@@ -24,8 +92,8 @@ jobs:
           
   QAdeploy:
     runs-on: ubuntu-latest
-    needs: QAbuild
-    environment: QA # subject to change
+    needs: [QApreDeploy, QAbuild]
+    environment: QA
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,107 +121,41 @@ jobs:
             --instance-url https://test.salesforce.com \
             --set-default
 
-      - name: Detect changed Apex classes
+      - name: Detect Apex test classes from develop
         id: detect
         run: |
-          # Make sure develop branch is available for comparison
           git fetch origin develop
 
-          # Find Apex classes changed or added in this PR (compared to develop)
-          files=$(git diff --name-only --diff-filter=AM origin/develop...HEAD | grep "force-app/main/default/classes/.*\.cls" || true)
-
-          if [ -z "$files" ]; then
-            echo "No Apex classes changed. Skipping tests."
-            echo "run_tests=false" >> $GITHUB_OUTPUT
+          tests=$(find force-app/main/default/classes -name "*Test.cls" -exec basename {} .cls \;)
+          if [ -z "$tests" ]; then
+            echo "No test classes found. Defaulting to RunLocalTests."
+            echo "run_tests=all" >> $GITHUB_OUTPUT
           else
-            tests=""
-            for f in $files; do
-              class=$(basename "$f" .cls)
-              testClass="${class}Test"
-
-              # Check if a test file for this class exists in the repo
-              if [ -f "force-app/main/default/classes/${testClass}.cls" ]; then
-                tests="$tests $testClass"
-              fi
-            done
-
-            if [ -z "$tests" ]; then
-              echo "No matching test classes found. Defaulting to RunLocalTests."
-              echo "run_tests=all" >> $GITHUB_OUTPUT
-            else
-              echo "Detected test classes: $tests"
-              echo "run_tests=true" >> $GITHUB_OUTPUT
-              echo "test_classes=$tests" >> $GITHUB_OUTPUT
-            fi
+            echo "Detected test classes: $tests"
+            echo "run_tests=true" >> $GITHUB_OUTPUT
+            echo "test_classes=$tests" >> $GITHUB_OUTPUT
           fi
 
-      - name: Deploy to QA (with tests)
-        id: deploy
-        if: steps.detect.outputs.run_tests == 'true'
+      - name: Deploy to QA
         run: |
-          sf project deploy start \
-            --source-dir force-app \
-            --wait 30 \
-            --test-level RunSpecifiedTests \
-            --tests ${{ steps.detect.outputs.test_classes }} \
-            --json > deploy-results.json
-        continue-on-error: true   # step won’t block next step
-
-      - name: Deploy to QA (no tests)
-        id: deploy_no_tests
-        if: steps.detect.outputs.run_tests != 'true'
-        run: |
-          sf project deploy start \
-            --source-dir force-app \
-            --wait 30 \
-            --test-level NoTestRun \
-            --json > deploy-results.json
-        continue-on-error: true
-
-      - name: Parse deploy results
-        id: results
-        run: |
-          total=$(jq '.result.details.runTestResult.numTestsRun' deploy-results.json)
-          failed=$(jq '.result.details.runTestResult.numFailures' deploy-results.json)
-          passed=$((total - failed))
-          time=$(jq '.result.details.runTestResult.totalTime' deploy-results.json)
-
-          # Extract failed test names
-          failed_tests=$(jq -r '.result.details.runTestResult.failures[]?.methodName' deploy-results.json | paste -sd ', ' -)
-
-          {
-            echo "summary<<EOF"
-            echo "✅ Passed: $passed"
-            echo "❌ Failed: $failed"
-            echo "📊 Total: $total"
-            echo "⏱️ Time: ${time}s"
-            echo ""
-            if [ -n "$failed_tests" ]; then
-              echo "**Failed Tests:**"
-              for t in $(jq -r '.result.details.runTestResult.failures[]?.methodName' deploy-results.json); do
-                echo "- $t"
-              done
-            fi
-            echo "EOF"
-          } >> $GITHUB_OUTPUT
-
-      - name: Comment results on PR
-        uses: peter-evans/create-or-update-comment@be17e0c03de886b7aff3fb3224d28bfb6fc5d114
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## Apex Classes Deployment Results
-            ${{ steps.results.outputs.summary }}
-          token: ${{ secrets.GH_PAT }}
-
-      - name: Fail job if deploy step failed
-        if: steps.deploy.outcome == 'failure' || steps.deploy_no_tests.outcome == 'failure'
-        run: exit 1
+          if [ "${{ steps.detect.outputs.run_tests }}" == "true" ]; then
+            echo "Running RunSpecifiedTests for: ${{ steps.detect.outputs.test_classes }}"
+            sf project deploy start \
+              --source-dir force-app \
+              --wait 30 \
+              --test-level RunSpecifiedTests \
+              --tests ${{ steps.detect.outputs.test_classes }}
+          else
+            echo "No specific test classes detected. Running RunLocalTests."
+            sf project deploy start \
+              --source-dir force-app \
+              --wait 30 \
+              --test-level RunLocalTests
 
   QApostDeploy:
     runs-on: ubuntu-latest
     needs: QAdeploy
-    environment: QAapex
+    environment: QA
 
     steps:
       - name: Checkout code
@@ -163,24 +165,20 @@ jobs:
 
       - uses: patrykacc/sf-cli-setup@74431631871daefe43ea718c09a13977a407270f
 
-      - name: Detect changed post-deploy Apex scripts
+      - name: Detect post-deploy Apex scripts
         id: detect
         run: |
-          BASE_BRANCH="${{ github.base_ref || 'develop' }}"
-          echo "Using base branch: $BASE_BRANCH"
-
-          files=$(git fetch origin $BASE_BRANCH && \
-            git diff --name-only --diff-filter=AM origin/$BASE_BRANCH...HEAD | grep "scripts/post/apex/.*\.apex" || true)
+          # List all post-deploy Apex scripts
+          files=$(ls scripts/post/apex/*.apex 2>/dev/null || true)
 
           if [ -z "$files" ]; then
-            echo "No post-deploy Apex scripts changed. Skipping."
+            echo "No post-deploy Apex scripts found. Skipping."
             echo "run_scripts=false" >> $GITHUB_OUTPUT
           else
             echo "Detected scripts:"
             echo "$files"
             echo "run_scripts=true" >> $GITHUB_OUTPUT
             echo "scripts=$files" >> $GITHUB_OUTPUT
-          fi
 
       - name: Authenticate with Salesforce
         env:
@@ -194,7 +192,7 @@ jobs:
             --jwt-key-file server.key \
             --username "$SF_USERNAME" \
             --instance-url https://test.salesforce.com \
-            --alias QAapex
+            --alias QA
 
       - name: Validate Apex scripts
         if: steps.detect.outputs.run_scripts == 'true'
@@ -216,8 +214,8 @@ jobs:
         if: steps.detect.outputs.run_scripts == 'true'
         run: |
           for script in ${{ steps.detect.outputs.scripts }}; do
-            echo "Running script: $script on QAapex"
-            sf apex run --file "$script" --target-org QAapex
+            echo "Running script: $script on QA"
+            sf apex run --file "$script" --target-org QA
             if [ $? -ne 0 ]; then
               echo "Script failed: $script"
               exit 1
