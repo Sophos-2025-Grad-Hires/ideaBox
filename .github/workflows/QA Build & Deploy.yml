@@ -153,8 +153,7 @@ jobs:
             sf project deploy start \
               --source-dir force-app \
               --wait 30 \
-              --test-level NoTestRun # RunSpecifiedTests \
-              # --tests $TESTS
+              --test-level NoTestRun 
           else
             echo "No specific test classes detected or empty. Running RunLocalTests."
             sf project deploy start \
