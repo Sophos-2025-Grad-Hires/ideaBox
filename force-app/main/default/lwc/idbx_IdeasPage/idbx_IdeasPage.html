@@ -9,6 +9,8 @@
         </template>
         <template lwc:else>
             <div class="idea-cards-wrapper">
+                <lightning-input onkeyup={handleSearch} onchange={handleClearSearchBar} placeholder="Search Ideas"
+                    type="search"></lightning-input>
                 <template for:each={ideas} for:item="idea">
                     <c-idbx_-idea-card key={idea.Id} idea={idea}></c-idbx_-idea-card>
                     <hr key={idea.Id} />
