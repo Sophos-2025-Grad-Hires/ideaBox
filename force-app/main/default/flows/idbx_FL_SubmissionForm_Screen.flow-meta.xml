@@ -24,6 +24,32 @@
             <stringValue>{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
         </value>
     </customProperties>
+    <decisions>
+        <description>Verifies the existence of the User&apos;s Ideabox Scorecard within the system.</description>
+        <name>idbx_checkExistingScorecard</name>
+        <label>Does User Scorecard Exist?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>idbx_createIdea</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Yes</defaultConnectorLabel>
+        <rules>
+            <name>idbx_noScorecard</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>idbx_scorecardId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>idbx_createScoreCard</targetReference>
+            </connector>
+            <label>No</label>
+        </rules>
+    </decisions>
     <description>Enables users to submit innovative ideas directly into the Ideabox through guided screen.</description>
     <dynamicChoiceSets>
         <description>Uses picklist from Category Field of Idea Object</description>
@@ -84,8 +110,62 @@
                 <elementReference>idbx_submissionDescription</elementReference>
             </value>
         </inputAssignments>
+        <inputAssignments>
+            <field>idbx_IdeaBox_Scorecard__c</field>
+            <value>
+                <elementReference>idbx_scorecardId</elementReference>
+            </value>
+        </inputAssignments>
         <object>idbx_Idea__c</object>
     </recordCreates>
+    <recordCreates>
+        <description>Creates a new IdeaBox Scorecard record for the submitting user if no existing Scorecard is found.</description>
+        <name>idbx_createScoreCard</name>
+        <label>Create ScoreCard Record</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignRecordIdToReference>idbx_scorecardId</assignRecordIdToReference>
+        <connector>
+            <targetReference>idbx_createIdea</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>idbx_IdeaBox_User__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>idbx_IdeaBox_Scorecard__c</object>
+    </recordCreates>
+    <recordLookups>
+        <description>Retrieves the existing IdeaBox Scorecard record associated with the current user. This is used to determine whether a Scorecard already exists before creating a new one.</description>
+        <name>idbx_getRecordsOfScoreCard</name>
+        <label>Get Records of Scorecard</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>idbx_checkExistingScorecard</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>idbx_IdeaBox_User__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </filters>
+        <object>idbx_IdeaBox_Scorecard__c</object>
+        <outputAssignments>
+            <assignToReference>idbx_scorecardId</assignToReference>
+            <field>Id</field>
+        </outputAssignments>
+    </recordLookups>
     <screens>
         <description>Guided screen flow for submission of idea in the IdeaBox</description>
         <name>idbx_ideaSubmissionForm</name>
@@ -96,7 +176,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>idbx_createIdea</targetReference>
+            <targetReference>idbx_getRecordsOfScoreCard</targetReference>
         </connector>
         <fields>
             <name>idbx_submissionHeader</name>
@@ -255,6 +335,14 @@
     </variables>
     <variables>
         <name>idbx_ideaId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <description>Variable for storing the id of scorecard record retrieved (either retrieved or newly created)</description>
+        <name>idbx_scorecardId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
