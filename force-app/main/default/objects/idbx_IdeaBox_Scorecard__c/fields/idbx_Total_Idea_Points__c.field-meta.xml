@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>idbx_Total_Idea_Points__c</fullName>
+    <description>Calculates the total accumulated points of a user based on all ideas they have submitted.</description>
+    <inlineHelpText>Calculates the total accumulated points of a user based on all ideas they have submitted.</inlineHelpText>
+    <label>Total Idea Points</label>
+    <summarizedField>idbx_Idea__c.idbx_Idea_Points__c</summarizedField>
+    <summaryForeignKey>idbx_Idea__c.idbx_IdeaBox_Scorecard__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>
