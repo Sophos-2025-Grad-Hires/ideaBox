@@ -341,7 +341,7 @@
         <isOutput>true</isOutput>
     </variables>
     <variables>
-        <description>Variable for storing the id of scorecard record retrieved</description>
+        <description>Variable for storing the id of scorecard record retrieved (either retrieved or newly created)</description>
         <name>idbx_scorecardId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
