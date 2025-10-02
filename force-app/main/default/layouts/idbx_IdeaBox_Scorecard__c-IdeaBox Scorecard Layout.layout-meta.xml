@@ -12,9 +12,13 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-              
-                <field>idbx_IdeaBox_User__c</field>
 
+                <field>idbx_IdeaBox_User__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>idbx_Total_Idea_Points__c</field>
+              
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
