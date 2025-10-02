@@ -1,0 +1,71 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.idea-card {
+    padding: 16px 12px;
+    background-color: white;
+    height: 205px;
+}
+
+.left-col {
+    padding-left: 12px;
+    gap: 4px;
+}
+
+.right-col {
+    padding: 32px;
+    gap: 4px;
+}
+
+h2 {
+    color: gray;
+}
+
+.description {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.created-info {
+    color: gray;
+}
+
+.points-amount {
+    font-weight: bold;
+}
+
+.status {
+    padding: 8px;
+    width: 172px;
+    color: white;
+    border-radius: 18px;
+    font-weight: bold;
+    align-self: center;
+}
+
+.status-open {
+    background-color: #e2e2e2;
+    color: black;
+}
+
+.status-approved {
+    background-color: #fdbc25;
+    color: black;
+}
+
+.status-rejected {
+    background-color: #860000;
+}
+
+.status-in-development {
+    background-color: #004786;
+}
+
+.status-delivered {
+    background-color: #04844b;
+}

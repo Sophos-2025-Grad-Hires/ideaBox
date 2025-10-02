@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>idbx_Vote_Points__c</fullName>
+    <description>Automatically calculates the point value of the vote based on its type.</description>
+    <externalId>false</externalId>
+    <formula>IF(TEXT(idbx_Type__c) = &apos;Neutral&apos;, 0, 
+  IF(TEXT(idbx_Type__c) = &apos;Upvote&apos;, 10, -10)
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Automatically calculates the point value of the vote based on its type.</inlineHelpText>
+    <label>Vote Points</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>
