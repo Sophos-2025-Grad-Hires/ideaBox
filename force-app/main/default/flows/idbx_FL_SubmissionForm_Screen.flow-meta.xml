@@ -25,9 +25,9 @@
         </value>
     </customProperties>
     <decisions>
-        <description>Verifies the existence of a the User&apos;s Ideabox Scorecard within the system.</description>
+        <description>Verifies the existence of the User&apos;s Ideabox Scorecard within the system.</description>
         <name>idbx_checkExistingScorecard</name>
-        <label>Does User Scorecard Exists?</label>
+        <label>Does User Scorecard Exist?</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
@@ -38,7 +38,7 @@
             <name>idbx_noScorecard</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>idbx_scorecardID</leftValueReference>
+                <leftValueReference>idbx_scorecardId</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -113,7 +113,7 @@
         <inputAssignments>
             <field>idbx_IdeaBox_Scorecard__c</field>
             <value>
-                <elementReference>idbx_scorecardID</elementReference>
+                <elementReference>idbx_scorecardId</elementReference>
             </value>
         </inputAssignments>
         <object>idbx_Idea__c</object>
@@ -124,7 +124,7 @@
         <label>Create ScoreCard Record</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <assignRecordIdToReference>idbx_scorecardID</assignRecordIdToReference>
+        <assignRecordIdToReference>idbx_scorecardId</assignRecordIdToReference>
         <connector>
             <targetReference>idbx_createIdea</targetReference>
         </connector>
@@ -162,7 +162,7 @@
         </filters>
         <object>idbx_IdeaBox_Scorecard__c</object>
         <outputAssignments>
-            <assignToReference>idbx_scorecardID</assignToReference>
+            <assignToReference>idbx_scorecardId</assignToReference>
             <field>Id</field>
         </outputAssignments>
     </recordLookups>
@@ -342,7 +342,7 @@
     </variables>
     <variables>
         <description>Variable for storing the id of scorecard record retrieved</description>
-        <name>idbx_scorecardID</name>
+        <name>idbx_scorecardId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
