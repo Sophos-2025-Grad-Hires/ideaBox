@@ -29,5 +29,5 @@ hr {
 .search-bar {
     width: 548px;
     margin: 8px 0px;
-    scale: 1.2;
+    transform: scale(1.2);
 }

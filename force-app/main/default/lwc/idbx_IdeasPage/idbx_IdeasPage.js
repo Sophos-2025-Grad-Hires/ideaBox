@@ -21,6 +21,9 @@ export default class Idbx_IdeasPage extends LightningElement {
     }
 
     get ideas() {
+        if (!this.ideasUnfiltered) {
+            return [];
+        }
         if (this.queryTerm && this.queryTerm.trim() !== '') {
             const lowerCaseQuery = this.queryTerm.toLowerCase();
             return this.ideasUnfiltered.filter(idea =>
@@ -34,7 +37,7 @@ export default class Idbx_IdeasPage extends LightningElement {
     queryTerm;
 
     handleSearch(event) {
-        const isEnterKey = event.keyCode === 13;
+        const isEnterKey = event.key === 'Enter';
 
         if (isEnterKey) {
             this.queryTerm = event.target.value;
