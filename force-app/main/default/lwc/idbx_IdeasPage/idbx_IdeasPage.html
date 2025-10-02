@@ -8,7 +8,7 @@
             </div>
         </template>
         <template lwc:else>
-            <lightning-input class="search-bar" variant="label-hidden" label="Search Bar for Ideas" onkeyup={handleSearch} onchange={handleClearSearchBar} placeholder="Search Ideas"
+            <lightning-input class="search-bar" variant="label-hidden" label="Search Bar for Ideas" onkeyup={handleSearch} onchange={handleSearchChange} placeholder="Search Ideas"
                     type="search"></lightning-input>
             <div class="idea-cards-wrapper">
                 <template for:each={ideas} for:item="idea">

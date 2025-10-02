@@ -44,7 +44,7 @@ export default class Idbx_IdeasPage extends LightningElement {
         }
     }
 
-    handleClearSearchBar(event) {
+    handleSearchChange(event) {
         if (event.target.value === '') {
             this.queryTerm = '';
         }
