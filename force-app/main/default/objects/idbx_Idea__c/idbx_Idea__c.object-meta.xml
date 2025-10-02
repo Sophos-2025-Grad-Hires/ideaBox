@@ -152,7 +152,8 @@
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
-    <externalSharingModel>Private</externalSharingModel>
+    <externalSharingModel>ControlledByParent</externalSharingModel>
+
     <label>Idea</label>
     <nameField>
         <encryptionScheme>None</encryptionScheme>
@@ -161,7 +162,8 @@
     </nameField>
     <pluralLabel>Ideas</pluralLabel>
     <searchLayouts></searchLayouts>
-    <sharingModel>Private</sharingModel>
+    <sharingModel>ControlledByParent</sharingModel>
+
     <startsWith>Vowel</startsWith>
     <visibility>Public</visibility>
 </CustomObject>
