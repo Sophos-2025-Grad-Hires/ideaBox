@@ -3,6 +3,6 @@
     <description>Allows user to access IdeaBox Application and features</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>IdeaBox User Persona</label>
-    <permissionSets>IdeaBox_User_Only</permissionSets>
+    <permissionSets>idbx_IdeaBox_User_Only</permissionSets>
     <status>Updated</status>
 </PermissionSetGroup>
