@@ -145,9 +145,9 @@ jobs:
 
       - name: Deploy to QA
         run: |
-          TESTS="${{ steps.detect.outputs.test_classes }}"
+          TESTS=$(echo "${{ steps.detect.outputs.test_classes }}" | xargs)
           RUN_TESTS="${{ steps.detect.outputs.run_tests }}"
-
+      
           if [ "$RUN_TESTS" = "true" ] && [ -n "$TESTS" ]; then
             echo "Running RunSpecifiedTests for: $TESTS"
             sf project deploy start \
@@ -162,7 +162,7 @@ jobs:
               --wait 30 \
               --test-level RunLocalTests
           fi
-
+          
   QApostDeploy:
     runs-on: ubuntu-latest
     needs: QAdeploy
