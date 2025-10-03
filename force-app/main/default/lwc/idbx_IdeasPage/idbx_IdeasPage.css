@@ -46,6 +46,7 @@ hr {
     cursor: pointer;
     transition: 0.3s;
     position: relative;
+    gap: 4px;
 }
 
 .date-sort-button::after {

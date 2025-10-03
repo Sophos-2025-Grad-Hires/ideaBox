@@ -16,8 +16,12 @@
                     <div class="slds-col">
                     </div>
                     <div class="slds-col_bump-left">
-                        <button class="date-sort-button" aria-label="Sort ideas by date">
-                            Date
+                        <button class="date-sort-button slds-grid" aria-pressed={isDescending} aria-label={ariaLabel}
+                            onclick={handleDateButtonClick}>
+                            <div class="slds-col">Date</div>
+                            <lightning-icon icon-name={buttonIcon} size="x-small"
+                                alternative-text="" aria-hidden="true" class="slds-grid slds-grid_align-center slds-grid_vertical-align-center">
+                            </lightning-icon>
                         </button>
                     </div>
                 </div>
