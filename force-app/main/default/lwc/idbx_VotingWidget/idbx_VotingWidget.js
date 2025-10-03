@@ -1,7 +1,7 @@
 import { api, LightningElement } from 'lwc';
-import getScore from '@salesforce/apex/idbx_VotesController.getScore';
-import vote from '@salesforce/apex/idbx_VotesController.vote';
-import getCurrentButtonStatus from '@salesforce/apex/idbx_VotesController.getCurrentButtonStatus';
+import getScore from '@salesforce/apex/idbx_VoteObjectSelector.getScore';
+import vote from '@salesforce/apex/idbx_VoteObjectSelector.vote';
+import getCurrentButtonStatus from '@salesforce/apex/idbx_VoteObjectSelector.getCurrentButtonStatus';
 import headerImage from '@salesforce/resourceUrl/idbx_VotingWidgetHeader';
 
 const VOTE_TYPES = {
