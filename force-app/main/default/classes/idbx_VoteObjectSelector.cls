@@ -28,5 +28,3 @@ public with sharing class idbx_VoteObjectSelector {
         }
     }
 }
-
-    
