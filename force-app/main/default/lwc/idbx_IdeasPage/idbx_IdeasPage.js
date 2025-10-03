@@ -2,35 +2,43 @@ import { wire, LightningElement } from 'lwc';
 import selectAll from '@salesforce/apex/IdeaSelector.selectAll';
 
 export default class Idbx_IdeasPage extends LightningElement {
-    ideasUnfiltered;
+    _ideas;
     error;
     
     @wire(selectAll)
     wiredIdeas({ error, data }) {
         if (data) {
-            this.ideasUnfiltered = data;
+            this._ideas = data;
             this.error = undefined;
         } else if (error) {
             this.error = error;
-            this.ideasUnfiltered = undefined;
+            this._ideas = undefined;
         }
     }
 
     get noIdeasAvailable() {
-        return !this.ideasUnfiltered || this.ideasUnfiltered.length === 0;
+        return !this._ideas || this._ideas.length === 0;
     }
 
     get ideas() {
-        if (!this.ideasUnfiltered) {
-            return [];
-        }
+        let transformedIdeas = this._ideas ? JSON.parse(JSON.stringify(this._ideas)) : [];
+
+        // Search filtering
         if (this.queryTerm && this.queryTerm.trim() !== '') {
             const lowerCaseQuery = this.queryTerm.toLowerCase();
-            return this.ideasUnfiltered.filter(idea =>
+            transformedIdeas = transformedIdeas.filter(idea =>
                 idea.Name.toLowerCase().includes(lowerCaseQuery)
             );
         }
-        return this.ideasUnfiltered;
+
+        // Date sorting
+        transformedIdeas.sort((a, b) => {
+            const dateA = new Date(a.CreatedDate);
+            const dateB = new Date(b.CreatedDate);
+            return this.isDescending ? dateB - dateA : dateA - dateB;
+        });
+
+        return transformedIdeas;
     }
 
     // Search functionality
@@ -48,5 +56,22 @@ export default class Idbx_IdeasPage extends LightningElement {
         if (event.target.value === '') {
             this.queryTerm = '';
         }
+    }
+
+    // Date Button functionality
+    isDescending = true; 
+
+    get buttonIcon() {
+        return this.isDescending ? 'utility:chevrondown' : 'utility:chevronup';
+    }
+
+    get ariaLabel() {
+        return this.isDescending 
+            ? 'Sort ideas by date descending' 
+            : 'Sort ideas by date ascending';
+    }
+
+    handleDateButtonClick() {
+        this.isDescending = !this.isDescending;
     }
 }
