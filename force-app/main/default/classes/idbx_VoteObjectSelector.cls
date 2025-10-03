@@ -19,12 +19,12 @@ public with sharing class idbx_VoteObjectSelector {
             update ideaVoteList;
         }
         else{
-            idbx_Vote__c  newOppVote = new idbx_Vote__c (
+            idbx_Vote__c  newVote = new idbx_Vote__c (
                 idbx_Idea__c = recordId,
                 idbx_User__c = UserInfo.getUserId(),
                 idbx_Type__c  = voteType
             );
-            insert newOppVote;
+            insert newVote;
         }
     }
 }
