@@ -8,12 +8,22 @@
             </div>
         </template>
         <template lwc:else>
-            <lightning-input class="search-bar" variant="label-hidden" label="Search Bar for Title of Ideas" onkeyup={handleSearch} onchange={handleSearchChange} placeholder="Search Title of Ideas"
-                    type="search"></lightning-input>
+            <lightning-input class="search-bar" variant="label-hidden" label="Search Bar for Title of Ideas"
+                onkeyup={handleSearch} onchange={handleSearchChange} placeholder="Search Title of Ideas"
+                type="search"></lightning-input>
             <div class="idea-cards-wrapper">
+                <div class="ideas-toolbar slds-grid slds-grid_vertical-align-center">
+                    <div class="slds-col">
+                    </div>
+                    <div class="slds-col_bump-left">
+                        <button class="date-sort-button" aria-label="Sort ideas by date">
+                            Date
+                        </button>
+                    </div>
+                </div>
                 <template for:each={ideas} for:item="idea">
-                    <c-idbx_-idea-card key={idea.Id} idea={idea}></c-idbx_-idea-card>
                     <hr key={idea.Id} />
+                    <c-idbx_-idea-card key={idea.Id} idea={idea}></c-idbx_-idea-card>
                 </template>
             </div>
         </template>
