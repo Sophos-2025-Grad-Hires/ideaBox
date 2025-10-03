@@ -145,16 +145,16 @@ jobs:
 
       - name: Deploy to QA
         run: |
-          TESTS="${{ steps.detect.outputs.test_classes }}"
+          TESTS=$(echo "${{ steps.detect.outputs.test_classes }}" | xargs)
           RUN_TESTS="${{ steps.detect.outputs.run_tests }}"
-
+      
           if [ "$RUN_TESTS" = "true" ] && [ -n "$TESTS" ]; then
             echo "Running RunSpecifiedTests for: $TESTS"
             sf project deploy start \
               --source-dir force-app \
               --wait 30 \
               --test-level RunSpecifiedTests \
-              --tests $TESTS
+              --tests "$TESTS"
           else
             echo "No specific test classes detected or empty. Running RunLocalTests."
             sf project deploy start \
