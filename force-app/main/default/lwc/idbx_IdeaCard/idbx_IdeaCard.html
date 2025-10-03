@@ -11,7 +11,7 @@
             <footer class="created-info slds-text-body_regular" aria-label="Created information">Created {CreatedDate} by <lightning-formatted-url value={ownerPageURL} label={idea.CreatedBy.Name} target="_blank"></lightning-formatted-url></footer>
         </div>
         <div class="right-col slds-col slds-size_1-of-3 slds-grid slds-grid_vertical slds-grid_align-center slds-text-align_center">
-            <div class="points-amount slds-text-heading_large">9999</div>
+            <div class="points-amount slds-text-heading_large">{idea.idbx_Idea_Points__c}</div>
             <div class="points-text slds-text-heading_small">Points</div>
             <div class={statusClass}>{idea.idbx_Status__c}</div>
         </div>
