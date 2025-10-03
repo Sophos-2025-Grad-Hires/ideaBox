@@ -1,0 +1,38 @@
+.voting-controls {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.btn-upvote {
+    float: right;
+    margin-left: 0.5rem;
+    --slds-c-button-text-color: green;
+}
+
+.btn-downvote {
+    float: left;
+    margin-left: 0.5rem;
+    --slds-c-button-text-color: red;
+}
+
+.score-display {
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.score-text {
+    color: #080707;
+    font-size: 18px;
+    font-weight: normal;
+    letter-spacing: 0;
+    line-height: 21px;
+}
+
+.voting-widget-header {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+
+
+

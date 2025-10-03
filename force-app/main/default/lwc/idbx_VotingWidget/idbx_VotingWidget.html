@@ -1,0 +1,35 @@
+<template>
+    <div class="voting-widget-header">
+            <img src={headerImage} alt="Voting Widget Header" style="max-width:100%; height:auto;">
+    </div>
+    <lightning-card variant="base">
+        <div class="score-display">
+            <span class="score-text"> {score} Points </span>
+        </div>
+         <div class="voting-controls">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col">
+                    <lightning-button
+                        label="Upvote"
+                        title="Upvote"
+                        icon-name="utility:like"
+                        class="btn-upvote"
+                        variant={upvoteVariant}
+                        onclick={handleUpvote}>
+                    </lightning-button>
+                </div>
+                <div class="slds-col">
+                    <lightning-button
+                        label="Downvote"
+                        title="Downvote"
+                        icon-name="utility:dislike"
+                        class="btn-downvote"
+                        variant={downvoteVariant}
+                        onclick={handleDownvote}>
+                    </lightning-button>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>
+
