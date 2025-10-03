@@ -133,7 +133,7 @@ jobs:
         run: |
           git fetch origin develop
 
-          tests=$(find force-app/main/default/classes -name "*Test.cls" -exec basename {} .cls \;)
+          tests=$(find force-app/main/default/classes -name "*Test.cls" -exec basename {} .cls \; | tr '\n' ' ')
           if [ -z "$tests" ]; then
             echo "No test classes found. Defaulting to RunLocalTests."
             echo "run_tests=all" >> $GITHUB_OUTPUT
