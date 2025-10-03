@@ -1,5 +1,5 @@
 <template>
-    <div class="ideas-background slds-grid slds-grid_align-center">
+    <div class="ideas-background slds-grid slds-grid_vertical slds-grid_vertical-align-center">
         <template lwc:if={noIdeasAvailable}>
             <div class="no-idea-message slds-text-heading_large slds-text-align_center">
                 No ideas for now. Be the first to submit an Idea!
@@ -8,6 +8,8 @@
             </div>
         </template>
         <template lwc:else>
+            <lightning-input class="search-bar" variant="label-hidden" label="Search Bar for Title of Ideas" onkeyup={handleSearch} onchange={handleSearchChange} placeholder="Search Title of Ideas"
+                    type="search"></lightning-input>
             <div class="idea-cards-wrapper">
                 <template for:each={ideas} for:item="idea">
                     <c-idbx_-idea-card key={idea.Id} idea={idea}></c-idbx_-idea-card>

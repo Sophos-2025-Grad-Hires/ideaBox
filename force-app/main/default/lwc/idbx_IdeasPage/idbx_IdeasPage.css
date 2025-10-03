@@ -25,3 +25,9 @@ hr {
 .lightbulb {
     font-size: 128px;
 }
+
+.search-bar {
+    width: 548px;
+    margin: 8px 0px;
+    transform: scale(1.2);
+}
